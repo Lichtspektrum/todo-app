@@ -1,14 +1,15 @@
 import { useState, useRef } from 'react';
 import type { Priority } from '../types';
+import { useLang } from '../contexts/LangContext';
 
 interface Props {
   onAdd: (text: string, priority: Priority) => void;
 }
 
 const PRIORITIES: Priority[] = ['high', 'medium', 'low'];
-const LABELS: Record<Priority, string> = { high: '高', medium: '中', low: '低' };
 
 export function InputArea({ onAdd }: Props) {
+  const { t } = useLang();
   const [priority, setPriority] = useState<Priority>('medium');
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -25,7 +26,7 @@ export function InputArea({ onAdd }: Props) {
       <input
         ref={inputRef}
         type="text"
-        placeholder="添加一个新任务…"
+        placeholder={t.placeholder}
         maxLength={200}
         onKeyDown={e => e.key === 'Enter' && handleAdd()}
       />
@@ -34,12 +35,12 @@ export function InputArea({ onAdd }: Props) {
           <button
             key={p}
             className={`priority-dot ${p}${priority === p ? ' active' : ''}`}
-            title={LABELS[p] + '优先级'}
+            title={t.priorityTitles[p]}
             onClick={() => setPriority(p)}
           />
         ))}
       </div>
-      <button className="add-btn" title="添加" onClick={handleAdd}>
+      <button className="add-btn" title={t.addTitle} onClick={handleAdd}>
         <svg viewBox="0 0 14 14">
           <line x1="7" y1="1" x2="7" y2="13" />
           <line x1="1" y1="7" x2="13" y2="7" />
