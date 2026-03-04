@@ -26,12 +26,34 @@ A minimal, elegant todo app styled after the Anthropic website aesthetic — war
 
 ## Getting Started · 本地运行
 
+**前置条件：** 需要先安装 [Node.js](https://nodejs.org)（点击链接，下载 LTS 版本安装即可）
+
+**1. 下载项目**
+
+点击页面右上角绿色的「Code」按钮 → 选择「Download ZIP」解压，或者用命令行：
+
+```bash
+git clone https://github.com/Lichtspektrum/todo-app.git
+cd todo-app
+```
+
+**2. 安装依赖**
+
+打开终端（macOS 搜索「Terminal」，Windows 搜索「PowerShell」），进入项目文件夹后运行：
+
 ```bash
 npm install
+```
+
+这一步会下载项目所需的代码库，只需执行一次。
+
+**3. 启动**
+
+```bash
 npm run dev
 ```
 
-Open `http://localhost:5173` in your browser.
+看到 `Local: http://localhost:5173` 后，在浏览器打开这个地址就可以使用了。
 
 ## Stack · 技术栈
 
