@@ -1,4 +1,6 @@
 import { useRef, useEffect } from 'react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import type { Todo, Priority } from '../types';
 import { useLang } from '../contexts/LangContext';
 
@@ -12,9 +14,30 @@ interface Props {
 
 const NEXT_PRIORITY: Record<Priority, Priority> = { high: 'medium', medium: 'low', low: 'high' };
 
+function getDueDateStatus(dueDate: string): 'overdue' | 'today' | 'future' {
+  const today = new Date().toISOString().slice(0, 10);
+  if (dueDate < today) return 'overdue';
+  if (dueDate === today) return 'today';
+  return 'future';
+}
+
+function formatDate(dueDate: string, locale: string): string {
+  const [y, m, d] = dueDate.split('-').map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString(locale, { month: 'short', day: 'numeric' });
+}
+
 export function TodoItem({ todo, onToggle, onDelete, onUpdateText, onUpdatePriority }: Props) {
   const { t } = useLang();
   const divRef = useRef<HTMLDivElement>(null);
+
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: todo.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 10 : undefined,
+  };
 
   useEffect(() => {
     if (divRef.current) {
@@ -35,13 +58,34 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdateText, onUpdatePrior
     }
   }
 
+  const dueDateStatus = todo.dueDate ? getDueDateStatus(todo.dueDate) : null;
+
   return (
-    <div className={`todo-item${todo.done ? ' done' : ''}`}>
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`todo-item${todo.done ? ' done' : ''}${isDragging ? ' dragging' : ''}`}
+    >
       <div
         className={`priority-indicator ${todo.priority}`}
         title={t.priorityTip(t.priorityLabels[todo.priority])}
         onClick={() => onUpdatePriority(NEXT_PRIORITY[todo.priority])}
       />
+      <div
+        className="drag-handle"
+        title={t.dragHandle}
+        {...attributes}
+        {...listeners}
+      >
+        <svg viewBox="0 0 10 16">
+          <circle cx="3" cy="3" r="1.2" />
+          <circle cx="7" cy="3" r="1.2" />
+          <circle cx="3" cy="8" r="1.2" />
+          <circle cx="7" cy="8" r="1.2" />
+          <circle cx="3" cy="13" r="1.2" />
+          <circle cx="7" cy="13" r="1.2" />
+        </svg>
+      </div>
       <div
         className={`checkbox${todo.done ? ' checked' : ''}`}
         onClick={onToggle}
@@ -50,15 +94,24 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdateText, onUpdatePrior
           <polyline points="1 5 4.5 8.5 11 1" />
         </svg>
       </div>
-      <div
-        ref={divRef}
-        className={`todo-text${todo.done ? ' done-text' : ''}`}
-        contentEditable
-        suppressContentEditableWarning
-        spellCheck={false}
-        onBlur={handleBlur}
-        onKeyDown={handleKeyDown}
-      />
+      <div className="todo-main">
+        <div
+          ref={divRef}
+          className={`todo-text${todo.done ? ' done-text' : ''}`}
+          contentEditable
+          suppressContentEditableWarning
+          spellCheck={false}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+        />
+        {todo.dueDate && (
+          <span className={`due-date-badge ${dueDateStatus}`}>
+            {dueDateStatus === 'overdue' ? t.dueDateOverdue :
+             dueDateStatus === 'today' ? t.dueDateToday :
+             formatDate(todo.dueDate, t.dateLocale)}
+          </span>
+        )}
+      </div>
       <span className={`priority-badge ${todo.priority}`}>
         {t.priorityLabels[todo.priority]}
       </span>
