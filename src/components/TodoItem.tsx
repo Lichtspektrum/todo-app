@@ -1,5 +1,6 @@
 import { useRef, useEffect } from 'react';
 import type { Todo, Priority } from '../types';
+import { useLang } from '../contexts/LangContext';
 
 interface Props {
   todo: Todo;
@@ -9,13 +10,12 @@ interface Props {
   onUpdatePriority: (priority: Priority) => void;
 }
 
-const PRIORITY_LABELS: Record<Priority, string> = { high: '高', medium: '中', low: '低' };
 const NEXT_PRIORITY: Record<Priority, Priority> = { high: 'medium', medium: 'low', low: 'high' };
 
 export function TodoItem({ todo, onToggle, onDelete, onUpdateText, onUpdatePriority }: Props) {
+  const { t } = useLang();
   const divRef = useRef<HTMLDivElement>(null);
 
-  // Only set innerHTML on mount to avoid cursor jumping
   useEffect(() => {
     if (divRef.current) {
       divRef.current.textContent = todo.text;
@@ -35,16 +35,12 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdateText, onUpdatePrior
     }
   }
 
-  function cyclePriority() {
-    onUpdatePriority(NEXT_PRIORITY[todo.priority]);
-  }
-
   return (
     <div className={`todo-item${todo.done ? ' done' : ''}`}>
       <div
         className={`priority-indicator ${todo.priority}`}
-        title={`优先级：${PRIORITY_LABELS[todo.priority]}（点击切换）`}
-        onClick={cyclePriority}
+        title={t.priorityTip(t.priorityLabels[todo.priority])}
+        onClick={() => onUpdatePriority(NEXT_PRIORITY[todo.priority])}
       />
       <div
         className={`checkbox${todo.done ? ' checked' : ''}`}
@@ -64,9 +60,9 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdateText, onUpdatePrior
         onKeyDown={handleKeyDown}
       />
       <span className={`priority-badge ${todo.priority}`}>
-        {PRIORITY_LABELS[todo.priority]}
+        {t.priorityLabels[todo.priority]}
       </span>
-      <button className="delete-btn" title="删除" onClick={onDelete}>
+      <button className="delete-btn" title={t.deleteTitle} onClick={onDelete}>
         <svg viewBox="0 0 14 14">
           <line x1="2" y1="2" x2="12" y2="12" />
           <line x1="12" y1="2" x2="2" y2="12" />

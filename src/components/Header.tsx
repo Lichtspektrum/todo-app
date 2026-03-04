@@ -1,5 +1,8 @@
+import { useLang } from '../contexts/LangContext';
+
 export function Header() {
-  const dateStr = new Date().toLocaleDateString('zh-CN', {
+  const { t } = useLang();
+  const dateStr = new Date().toLocaleDateString(t.dateLocale, {
     year: 'numeric', month: 'long', day: 'numeric', weekday: 'long',
   });
 
@@ -11,7 +14,7 @@ export function Header() {
         </div>
         <span className="app-name">Todo</span>
       </div>
-      <h1>今天要做什么？</h1>
+      <h1>{t.title}</h1>
       <p className="subtitle">{dateStr}</p>
     </div>
   );

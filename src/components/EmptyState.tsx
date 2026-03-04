@@ -1,16 +1,17 @@
 import type { Filter } from '../types';
+import { useLang } from '../contexts/LangContext';
 
 interface Props {
   filter: Filter;
 }
 
-const MESSAGES: Record<Filter, string> = {
-  done: '还没有完成的任务',
-  active: '没有待办任务，休息一下吧',
-  all: '添加第一个任务开始吧',
-};
-
 export function EmptyState({ filter }: Props) {
+  const { t } = useLang();
+
+  const message = filter === 'done' ? t.emptyDone
+    : filter === 'active' ? t.emptyActive
+    : t.emptyAll;
+
   return (
     <div className="empty">
       <div className="empty-icon">
@@ -19,7 +20,7 @@ export function EmptyState({ filter }: Props) {
           <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
         </svg>
       </div>
-      <p>{MESSAGES[filter]}</p>
+      <p>{message}</p>
     </div>
   );
 }

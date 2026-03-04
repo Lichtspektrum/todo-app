@@ -443,6 +443,40 @@ h1 {
   font-size: 14px;
 }
 
+/* Language toggle */
+.lang-toggle {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  color: var(--text-secondary);
+  box-shadow: var(--shadow);
+  transition: border-color 0.15s;
+  z-index: 100;
+}
+
+.lang-toggle:hover {
+  border-color: #D4CFC7;
+}
+
+.lang-toggle span.active {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.lang-toggle .separator {
+  opacity: 0.4;
+}
+
 /* Progress bar */
 .progress-wrap {
   height: 3px;

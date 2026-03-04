@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Filter, Priority } from './types';
 import { useTodos } from './hooks/useTodos';
+import { LangProvider, useLang } from './contexts/LangContext';
 import { Header } from './components/Header';
 import { InputArea } from './components/InputArea';
 import { ProgressBar } from './components/ProgressBar';
@@ -9,7 +10,18 @@ import { Filters } from './components/Filters';
 import { TodoItem } from './components/TodoItem';
 import { EmptyState } from './components/EmptyState';
 
-export default function App() {
+function LangToggle() {
+  const { lang, toggleLang } = useLang();
+  return (
+    <button className="lang-toggle" onClick={toggleLang} title="Switch language">
+      <span className={lang === 'zh' ? 'active' : ''}>中</span>
+      <span className="separator">·</span>
+      <span className={lang === 'en' ? 'active' : ''}>EN</span>
+    </button>
+  );
+}
+
+function TodoApp() {
   const { todos, addTodo, toggleTodo, deleteTodo, updateText, updatePriority, clearDone } = useTodos();
   const [filter, setFilter] = useState<Filter>('all');
 
@@ -50,5 +62,14 @@ export default function App() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <LangProvider>
+      <LangToggle />
+      <TodoApp />
+    </LangProvider>
   );
 }

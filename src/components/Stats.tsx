@@ -1,3 +1,5 @@
+import { useLang } from '../contexts/LangContext';
+
 interface Props {
   total: number;
   done: number;
@@ -5,12 +7,14 @@ interface Props {
 }
 
 export function Stats({ total, done, onClearDone }: Props) {
+  const { t } = useLang();
   const active = total - done;
+
   return (
     <div className="stats">
       <div className="stats-count">
         {total > 0 && (
-          <><span>{active}</span> 项待办 · <span>{done}</span> 项完成</>
+          <><span>{active}</span>{t.activeSuffix} · <span>{done}</span>{t.doneSuffix}</>
         )}
       </div>
       <button
@@ -18,7 +22,7 @@ export function Stats({ total, done, onClearDone }: Props) {
         style={{ visibility: done > 0 ? 'visible' : 'hidden' }}
         onClick={onClearDone}
       >
-        清除已完成
+        {t.clearDone}
       </button>
     </div>
   );
