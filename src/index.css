@@ -1,0 +1,460 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #F5F1EA;
+  --surface: #FDFAF5;
+  --border: #E8E2D9;
+  --text: #1A1A18;
+  --text-secondary: #6B6860;
+  --accent: #CF6631;
+  --accent-light: #F5EDE5;
+  --done: #A8A49D;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+
+  --priority-high: #C0392B;
+  --priority-high-bg: #FDF0EF;
+  --priority-medium: #C4943A;
+  --priority-medium-bg: #FDF6EC;
+  --priority-low: #5A8A6B;
+  --priority-low-bg: #F0F6F2;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, 'Söhne', 'Helvetica Neue', Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 60px 20px;
+}
+
+.container {
+  width: 100%;
+  max-width: 580px;
+}
+
+/* Header */
+.header {
+  margin-bottom: 40px;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.logo {
+  width: 22px;
+  height: 22px;
+  background: var(--text);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo svg {
+  width: 12px;
+  height: 12px;
+  fill: var(--bg);
+}
+
+.app-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+}
+
+h1 {
+  font-size: 32px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--text);
+}
+
+.subtitle {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* Input area */
+.input-area {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.input-area input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  color: var(--text);
+  font-family: inherit;
+}
+
+.input-area input::placeholder {
+  color: var(--done);
+}
+
+.priority-picker {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.priority-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.priority-dot:hover {
+  transform: scale(1.2);
+}
+
+.priority-dot.active {
+  border-color: var(--text);
+}
+
+.priority-dot.high { background: var(--priority-high); }
+.priority-dot.medium { background: var(--priority-medium); }
+.priority-dot.low { background: var(--priority-low); }
+
+.add-btn {
+  width: 32px;
+  height: 32px;
+  background: var(--text);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.add-btn:hover {
+  background: var(--accent);
+}
+
+.add-btn:active {
+  transform: scale(0.95);
+}
+
+.add-btn svg {
+  width: 14px;
+  height: 14px;
+  stroke: white;
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+/* Filters */
+.filters {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.filter-btn {
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid transparent;
+  background: none;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.filter-btn:hover {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+.filter-btn.active {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+
+/* Stats */
+.stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding: 0 2px;
+}
+
+.stats-count {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.stats-count span {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.clear-done {
+  font-size: 13px;
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: color 0.15s, text-decoration-color 0.15s;
+}
+
+.clear-done:hover {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+
+/* Todo list */
+.todo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.todo-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow);
+  animation: slideIn 0.2s ease;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+
+.todo-item:hover {
+  border-color: #D4CFC7;
+}
+
+.todo-item.done {
+  background: #F9F7F3;
+}
+
+/* Priority indicator - left border strip */
+.priority-indicator {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  cursor: pointer;
+  transition: width 0.15s;
+}
+
+.todo-item:hover .priority-indicator {
+  width: 5px;
+}
+
+.priority-indicator.high { background: var(--priority-high); }
+.priority-indicator.medium { background: var(--priority-medium); }
+.priority-indicator.low { background: var(--priority-low); }
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Checkbox */
+.checkbox {
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  background: white;
+}
+
+.todo-item:hover .checkbox {
+  border-color: var(--accent);
+}
+
+.checkbox.checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.checkbox svg {
+  width: 11px;
+  height: 11px;
+  stroke: white;
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.15s;
+}
+
+.checkbox.checked svg {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Todo text */
+.todo-text {
+  flex: 1;
+  font-size: 15px;
+  line-height: 1.4;
+  cursor: text;
+  outline: none;
+  min-width: 0;
+  word-break: break-word;
+}
+
+.todo-text.done-text {
+  color: var(--done);
+  text-decoration: line-through;
+  text-decoration-color: var(--border);
+}
+
+/* Priority badge */
+.priority-badge {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+
+.priority-badge.high {
+  color: var(--priority-high);
+  background: var(--priority-high-bg);
+}
+
+.priority-badge.medium {
+  color: var(--priority-medium);
+  background: var(--priority-medium-bg);
+}
+
+.priority-badge.low {
+  color: var(--priority-low);
+  background: var(--priority-low-bg);
+}
+
+/* Delete button */
+.delete-btn {
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.todo-item:hover .delete-btn {
+  opacity: 1;
+}
+
+.delete-btn:hover {
+  background: #F0EBE3;
+}
+
+.delete-btn svg {
+  width: 14px;
+  height: 14px;
+  stroke: var(--text-secondary);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+/* Empty state */
+.empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+}
+
+.empty-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-icon svg {
+  width: 22px;
+  height: 22px;
+  stroke: var(--border);
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.empty p {
+  font-size: 14px;
+}
+
+/* Progress bar */
+.progress-wrap {
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
