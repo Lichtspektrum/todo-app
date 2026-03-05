@@ -4,6 +4,7 @@ export const translations = {
   zh: {
     title: '今天要做什么？',
     dateLocale: 'zh-CN' as const,
+    dateFnsLocaleKey: 'zhCN',
     placeholder: '添加一个新任务…',
     addTitle: '添加',
     priorityLabels: { high: '高', medium: '中', low: '低' },
@@ -26,11 +27,14 @@ export const translations = {
     dueDatePlaceholder: '截止日期',
     dueDateOverdue: '已过期',
     dueDateToday: '今天到期',
+    dueDateTomorrow: '明天到期',
+    dueDateYesterday: '昨天到期',
     dragHandle: '拖拽排序',
   },
   en: {
     title: "What's on your list?",
     dateLocale: 'en-US' as const,
+    dateFnsLocaleKey: 'enUS',
     placeholder: 'Add a new task…',
     addTitle: 'Add',
     priorityLabels: { high: 'High', medium: 'Med', low: 'Low' },
@@ -53,6 +57,8 @@ export const translations = {
     dueDatePlaceholder: 'Due date',
     dueDateOverdue: 'Overdue',
     dueDateToday: 'Due today',
+    dueDateTomorrow: 'Due tomorrow',
+    dueDateYesterday: 'Due yesterday',
     dragHandle: 'Drag to reorder',
   },
 };

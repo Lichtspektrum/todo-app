@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -40,17 +40,24 @@ function TodoApp() {
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
-  const visibleTodos = todos.filter(t => {
-    const listMatch = listTab === 'all' || t.list === listTab;
-    const filterMatch =
-      filter === 'active' ? !t.done :
-      filter === 'done' ? t.done :
-      true;
-    return listMatch && filterMatch;
-  });
+  const visibleTodos = useMemo(() => {
+    return todos.filter(t => {
+      const listMatch = listTab === 'all' || t.list === listTab;
+      const filterMatch =
+        filter === 'active' ? !t.done :
+        filter === 'done' ? t.done :
+        true;
+      return listMatch && filterMatch;
+    });
+  }, [todos, listTab, filter]);
 
-  const scopedTodos = listTab === 'all' ? todos : todos.filter(t => t.list === listTab);
-  const doneCount = scopedTodos.filter(t => t.done).length;
+  const scopedTodos = useMemo(() => {
+    return listTab === 'all' ? todos : todos.filter(t => t.list === listTab);
+  }, [todos, listTab]);
+
+  const doneCount = useMemo(() => {
+    return scopedTodos.filter(t => t.done).length;
+  }, [scopedTodos]);
 
   function handleAdd(text: string, priority: Priority, list: List, dueDate?: string) {
     addTodo(text, priority, list, dueDate);

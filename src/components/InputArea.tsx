@@ -14,12 +14,11 @@ export function InputArea({ onAdd, defaultList }: Props) {
   const [priority, setPriority] = useState<Priority>('medium');
   const [list, setList] = useState<List>(defaultList);
   const [dueDate, setDueDate] = useState('');
+  const [userChangedList, setUserChangedList] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const userChangedList = useRef(false);
-
   function handleListChange(l: List) {
-    userChangedList.current = true;
+    setUserChangedList(true);
     setList(l);
   }
 
@@ -29,13 +28,13 @@ export function InputArea({ onAdd, defaultList }: Props) {
     onAdd(text, priority, list, dueDate || undefined);
     inputRef.current!.value = '';
     setDueDate('');
-    userChangedList.current = false;
+    setUserChangedList(false);
     setList(defaultList);
     inputRef.current!.focus();
   }
 
   // Sync list to defaultList when user hasn't manually overridden
-  const effectiveList = userChangedList.current ? list : defaultList;
+  const effectiveList = userChangedList ? list : defaultList;
 
   return (
     <div className="input-area">

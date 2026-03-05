@@ -1,6 +1,8 @@
 import { useRef, useEffect } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { format, isToday, isTomorrow, isYesterday, isBefore, startOfDay, parseISO } from 'date-fns';
+import { zhCN, enUS } from 'date-fns/locale';
 import type { Todo, Priority } from '../types';
 import { useLang } from '../contexts/LangContext';
 
@@ -13,17 +15,20 @@ interface Props {
 }
 
 const NEXT_PRIORITY: Record<Priority, Priority> = { high: 'medium', medium: 'low', low: 'high' };
+const locales = { zhCN, enUS };
 
-function getDueDateStatus(dueDate: string): 'overdue' | 'today' | 'future' {
-  const today = new Date().toISOString().slice(0, 10);
-  if (dueDate < today) return 'overdue';
-  if (dueDate === today) return 'today';
+function getDueDateStatus(dueDate: string): 'overdue' | 'today' | 'tomorrow' | 'yesterday' | 'future' {
+  const date = parseISO(dueDate);
+  if (isToday(date)) return 'today';
+  if (isTomorrow(date)) return 'tomorrow';
+  if (isYesterday(date)) return 'yesterday';
+  if (isBefore(date, startOfDay(new Date()))) return 'overdue';
   return 'future';
 }
 
-function formatDate(dueDate: string, locale: string): string {
-  const [y, m, d] = dueDate.split('-').map(Number);
-  return new Date(y, m - 1, d).toLocaleDateString(locale, { month: 'short', day: 'numeric' });
+function formatDate(dueDate: string, localeKey: 'zhCN' | 'enUS'): string {
+  const date = parseISO(dueDate);
+  return format(date, 'MMM d, EEE', { locale: locales[localeKey] });
 }
 
 export function TodoItem({ todo, onToggle, onDelete, onUpdateText, onUpdatePriority }: Props) {
@@ -112,8 +117,10 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdateText, onUpdatePrior
         {todo.dueDate && (
           <span className={`due-date-badge ${dueDateStatus}`}>
             {dueDateStatus === 'overdue' ? t.dueDateOverdue :
+             dueDateStatus === 'yesterday' ? t.dueDateYesterday :
              dueDateStatus === 'today' ? t.dueDateToday :
-             formatDate(todo.dueDate, t.dateLocale)}
+             dueDateStatus === 'tomorrow' ? t.dueDateTomorrow :
+             formatDate(todo.dueDate, t.dateFnsLocaleKey)}
           </span>
         )}
       </div>
