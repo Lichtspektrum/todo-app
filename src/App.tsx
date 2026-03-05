@@ -8,6 +8,7 @@ import {
   type DragEndEvent,
 } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
+import { compareAsc } from 'date-fns';
 import type { Filter, Priority, List } from './types';
 import { useTodos } from './hooks/useTodos';
 import { LangProvider, useLang } from './contexts/LangContext';
@@ -21,6 +22,7 @@ import { TodoItem } from './components/TodoItem';
 import { EmptyState } from './components/EmptyState';
 
 type ListTab = List | 'all';
+type SortMode = 'manual' | 'date';
 
 function LangToggle() {
   const { lang, toggleLang } = useLang();
@@ -37,11 +39,13 @@ function TodoApp() {
   const { todos, addTodo, toggleTodo, deleteTodo, updateText, updatePriority, clearDone, reorderTodos } = useTodos();
   const [filter, setFilter] = useState<Filter>('all');
   const [listTab, setListTab] = useState<ListTab>('all');
+  const [sortMode, setSortMode] = useState<SortMode>('manual');
+  const { t } = useLang();
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
   const visibleTodos = useMemo(() => {
-    return todos.filter(t => {
+    let result = todos.filter(t => {
       const listMatch = listTab === 'all' || t.list === listTab;
       const filterMatch =
         filter === 'active' ? !t.done :
@@ -49,7 +53,18 @@ function TodoApp() {
         true;
       return listMatch && filterMatch;
     });
-  }, [todos, listTab, filter]);
+
+    if (sortMode === 'date') {
+      result = [...result].sort((a, b) => {
+        if (!a.dueDate && !b.dueDate) return 0;
+        if (!a.dueDate) return 1; // Put items without due date at the end
+        if (!b.dueDate) return -1;
+        return compareAsc(new Date(a.dueDate), new Date(b.dueDate));
+      });
+    }
+
+    return result;
+  }, [todos, listTab, filter, sortMode]);
 
   const scopedTodos = useMemo(() => {
     return listTab === 'all' ? todos : todos.filter(t => t.list === listTab);
@@ -66,7 +81,7 @@ function TodoApp() {
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
-    if (!over || active.id === over.id) return;
+    if (!over || active.id === over.id || sortMode === 'date') return; // Disable drag reordering if sorted by date
 
     const oldIndex = todos.findIndex(t => t.id === active.id);
     const newIndex = todos.findIndex(t => t.id === over.id);
@@ -82,7 +97,25 @@ function TodoApp() {
       <InputArea onAdd={handleAdd} defaultList={defaultList} />
       <ProgressBar total={scopedTodos.length} done={doneCount} />
       <Stats total={scopedTodos.length} done={doneCount} onClearDone={clearDone} />
-      <Filters filter={filter} onChange={setFilter} />
+      
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+        <Filters filter={filter} onChange={setFilter} />
+        <button 
+          onClick={() => setSortMode(m => m === 'manual' ? 'date' : 'manual')}
+          style={{ 
+            padding: '4px 8px', 
+            borderRadius: '6px', 
+            fontSize: '0.85rem',
+            background: 'var(--bg-secondary)',
+            color: 'var(--text-secondary)',
+            border: '1px solid var(--border-color)',
+            cursor: 'pointer'
+          }}
+        >
+          {sortMode === 'manual' ? t.sortByDate : t.sortByManual}
+        </button>
+      </div>
+
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={visibleTodos.map(t => t.id)} strategy={verticalListSortingStrategy}>
           <div className="todo-list">

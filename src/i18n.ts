@@ -30,6 +30,8 @@ export const translations = {
     dueDateTomorrow: '明天到期',
     dueDateYesterday: '昨天到期',
     dragHandle: '拖拽排序',
+    sortByDate: '按日期排序',
+    sortByManual: '自定义排序',
   },
   en: {
     title: "What's on your list?",
@@ -60,5 +62,7 @@ export const translations = {
     dueDateTomorrow: 'Due tomorrow',
     dueDateYesterday: 'Due yesterday',
     dragHandle: 'Drag to reorder',
+    sortByDate: 'Sort by Date',
+    sortByManual: 'Manual Sort',
   },
 };

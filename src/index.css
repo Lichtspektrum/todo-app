@@ -231,21 +231,44 @@ h1 {
 }
 
 .due-date-input {
-  background: none;
+  background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 3px 8px;
-  font-size: 12px;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 13px;
   font-family: inherit;
   color: var(--text-secondary);
   cursor: pointer;
   outline: none;
-  transition: border-color 0.15s;
+  transition: all 0.15s ease;
+  min-width: 110px;
+}
+
+.due-date-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.6;
+  transition: 0.2s;
+  filter: invert(0.4);
+}
+
+[data-theme="dark"] .due-date-input::-webkit-calendar-picker-indicator {
+  filter: invert(0.8);
+}
+
+.due-date-input::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
 }
 
 .due-date-input:hover,
 .due-date-input:focus {
-  border-color: var(--text-secondary);
+  border-color: #D4CFC7;
+  color: var(--text);
+  box-shadow: 0 0 0 2px rgba(207, 102, 49, 0.1);
+}
+
+[data-theme="dark"] .due-date-input:hover,
+[data-theme="dark"] .due-date-input:focus {
+  border-color: #4A4A4A;
 }
 
 .priority-picker {

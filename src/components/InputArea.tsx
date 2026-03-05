@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import type { Priority, List } from '../types';
 import { useLang } from '../contexts/LangContext';
+import { DatePicker } from './DatePicker';
 
 interface Props {
   onAdd: (text: string, priority: Priority, list: List, dueDate?: string) => void;
@@ -13,7 +14,7 @@ export function InputArea({ onAdd, defaultList }: Props) {
   const { t } = useLang();
   const [priority, setPriority] = useState<Priority>('medium');
   const [list, setList] = useState<List>(defaultList);
-  const [dueDate, setDueDate] = useState('');
+  const [dueDate, setDueDate] = useState<Date | undefined>();
   const [userChangedList, setUserChangedList] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -25,9 +26,16 @@ export function InputArea({ onAdd, defaultList }: Props) {
   function handleAdd() {
     const text = inputRef.current?.value.trim() ?? '';
     if (!text) return;
-    onAdd(text, priority, list, dueDate || undefined);
+    
+    // Format date to string YYYY-MM-DD for the backend/storage
+    const dateStr = dueDate 
+      ? `${dueDate.getFullYear()}-${String(dueDate.getMonth() + 1).padStart(2, '0')}-${String(dueDate.getDate()).padStart(2, '0')}`
+      : undefined;
+
+    onAdd(text, priority, list, dateStr);
+    
     inputRef.current!.value = '';
-    setDueDate('');
+    setDueDate(undefined);
     setUserChangedList(false);
     setList(defaultList);
     inputRef.current!.focus();
@@ -76,13 +84,7 @@ export function InputArea({ onAdd, defaultList }: Props) {
             </button>
           ))}
         </div>
-        <input
-          type="date"
-          className="due-date-input"
-          value={dueDate}
-          onChange={e => setDueDate(e.target.value)}
-          title={t.dueDatePlaceholder}
-        />
+        <DatePicker date={dueDate} onDateChange={setDueDate} />
       </div>
     </div>
   );
