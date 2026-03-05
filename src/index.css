@@ -323,7 +323,7 @@ h1 {
 .add-btn svg {
   width: 14px;
   height: 14px;
-  stroke: white;
+  stroke: var(--bg);
   fill: none;
   stroke-width: 2.5;
   stroke-linecap: round;
