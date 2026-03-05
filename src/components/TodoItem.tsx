@@ -120,7 +120,7 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdateText, onUpdatePrior
              dueDateStatus === 'yesterday' ? t.dueDateYesterday :
              dueDateStatus === 'today' ? t.dueDateToday :
              dueDateStatus === 'tomorrow' ? t.dueDateTomorrow :
-             formatDate(todo.dueDate, t.dateFnsLocaleKey)}
+             formatDate(todo.dueDate, t.dateFnsLocaleKey as "zhCN" | "enUS")}
           </span>
         )}
       </div>
