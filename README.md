@@ -1,36 +1,26 @@
 # Todo
 
-A minimal, elegant todo app styled after the Anthropic website aesthetic — warm beige tones, copper-orange accents, and clean typography.
-
-一个简洁的待办事项应用，UI 风格参考 Anthropic 官网——暖米色调、铜橙点缀、干净的排版。
+一个极简的待办清单。UI 参考了 Anthropic 的设计，暖米色调配铜橙点缀。支持深色模式、多语言、优先级标记、拖拽排序——功能够用，代码可读。
 
 ![Todo App](https://img.shields.io/badge/React-19-61DAFB?style=flat&logo=react) ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat&logo=typescript) ![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=flat&logo=vite)
 
-## Features · 功能
+## 有什么功能
 
-- Add, edit (inline), and delete tasks
-- Priority levels — high / medium / low with color indicators
-- Filter by all / active / done
-- Progress bar tracking completion
-- Persistent storage via `localStorage`
-- Slide-in animation for new items
+- **任务管理**：添加、行内编辑、删除，拖拽排序
+- **优先级**：高/中/低，用颜色和左侧竖线区分
+- **过滤视图**：全部、待办、已完成
+- **进度条**：实时显示完成率
+- **日夜模式**：圆形波纹展开的切换动效
+- **多语言**：中文、English（右上角切换）
+- **截止日期**：可选，标记逾期任务
+- **本地存储**：`localStorage` 同步状态，无须登录
+- **响应式**：手机、平板、电脑都能用
 
----
+## 快速开始
 
-- 添加、行内编辑、删除任务
-- 高 / 中 / 低优先级，彩色竖线 + 标签直观区分
-- 三种筛选视图：全部 / 待办 / 已完成
-- 进度条实时显示完成比例
-- `localStorage` 本地持久化
-- 新任务入场动画
+**需要：** [Node.js](https://nodejs.org) LTS 版本
 
-## Getting Started · 本地运行
-
-**前置条件：** 需要先安装 [Node.js](https://nodejs.org)（点击链接，下载 LTS 版本安装即可）
-
-**1. 下载项目**
-
-点击页面右上角绿色的「Code」按钮 → 选择「Download ZIP」解压，或者用命令行：
+**1. Clone 或下载**
 
 ```bash
 git clone https://github.com/Lichtspektrum/todo-app.git
@@ -39,27 +29,41 @@ cd todo-app
 
 **2. 安装依赖**
 
-打开终端（macOS 搜索「Terminal」，Windows 搜索「PowerShell」），进入项目文件夹后运行：
-
 ```bash
 npm install
 ```
 
-这一步会下载项目所需的代码库，只需执行一次。
-
-**3. 启动**
+**3. 开发模式**
 
 ```bash
 npm run dev
 ```
 
-看到 `Local: http://localhost:5173` 后，在浏览器打开这个地址就可以使用了。
+打开浏览器访问 `http://localhost:5173`
 
-## Stack · 技术栈
+**生产构建**
 
-- [React 19](https://react.dev)
-- [TypeScript](https://www.typescriptlang.org)
-- [Vite](https://vite.dev)
+```bash
+npm run build
+npm run preview
+```
+
+## 技术栈
+
+- [React 19](https://react.dev) — UI 框架
+- [TypeScript](https://www.typescriptlang.org) — 类型安全
+- [Vite](https://vite.dev) — 快速构建工具
+- [dnd-kit](https://docs.dndkit.com) — 拖拽库
+- [View Transitions API](https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API) — 主题切换动画
+
+## 设计思路
+
+这个项目的目标是写一个"够用"的待办应用，而不是功能堆砌。代码结构简单，易于理解和扩展——适合学习 React、TypeScript、Vite 的工作流。
+
+如果你想：
+- **学习**：代码注释不多，但结构清晰，试试修改功能或添加新特性
+- **使用**：完全够日常用，开个浏览器标签页就行
+- **参考**：设计和交互逻辑都有，可以借鉴
 
 ## License
 
