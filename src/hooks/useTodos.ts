@@ -13,7 +13,11 @@ export function useTodos() {
   const [todos, setTodos] = useState<Todo[]>(load);
 
   useEffect(() => {
-    localStorage.setItem('todos', JSON.stringify(todos));
+    try {
+      localStorage.setItem('todos', JSON.stringify(todos));
+    } catch {
+      // Storage quota exceeded or unavailable
+    }
   }, [todos]);
 
   function addTodo(text: string, priority: Priority, list: List, dueDate?: string) {

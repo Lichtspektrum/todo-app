@@ -16,12 +16,7 @@ export function InputArea({ onAdd, defaultList }: Props) {
   const [dueDate, setDueDate] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Sync list when parent's defaultList changes (e.g., switching tabs)
-  // We use a ref to track if the user has manually changed it
   const userChangedList = useRef(false);
-  if (!userChangedList.current) {
-    // Only sync when user hasn't manually picked
-  }
 
   function handleListChange(l: List) {
     userChangedList.current = true;
@@ -58,11 +53,12 @@ export function InputArea({ onAdd, defaultList }: Props) {
               key={p}
               className={`priority-dot ${p}${priority === p ? ' active' : ''}`}
               title={t.priorityTitles[p]}
+              aria-label={t.priorityTitles[p]}
               onClick={() => setPriority(p)}
             />
           ))}
         </div>
-        <button className="add-btn" title={t.addTitle} onClick={handleAdd}>
+        <button className="add-btn" title={t.addTitle} aria-label={t.addTitle} onClick={handleAdd}>
           <svg viewBox="0 0 14 14">
             <line x1="7" y1="1" x2="7" y2="13" />
             <line x1="1" y1="7" x2="13" y2="7" />

@@ -68,7 +68,9 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdateText, onUpdatePrior
     >
       <div
         className={`priority-indicator ${todo.priority}`}
+        role="button"
         title={t.priorityTip(t.priorityLabels[todo.priority])}
+        aria-label={t.priorityTip(t.priorityLabels[todo.priority])}
         onClick={() => onUpdatePriority(NEXT_PRIORITY[todo.priority])}
       />
       <div
@@ -88,6 +90,9 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdateText, onUpdatePrior
       </div>
       <div
         className={`checkbox${todo.done ? ' checked' : ''}`}
+        role="checkbox"
+        aria-checked={todo.done}
+        aria-label={todo.text}
         onClick={onToggle}
       >
         <svg viewBox="0 0 12 10">
@@ -115,7 +120,7 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdateText, onUpdatePrior
       <span className={`priority-badge ${todo.priority}`}>
         {t.priorityLabels[todo.priority]}
       </span>
-      <button className="delete-btn" title={t.deleteTitle} onClick={onDelete}>
+      <button className="delete-btn" title={t.deleteTitle} aria-label={t.deleteTitle} onClick={onDelete}>
         <svg viewBox="0 0 14 14">
           <line x1="2" y1="2" x2="12" y2="12" />
           <line x1="12" y1="2" x2="2" y2="12" />
