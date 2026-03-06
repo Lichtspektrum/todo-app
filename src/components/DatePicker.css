@@ -141,9 +141,22 @@
 }
 
 /* Today's date */
-.anthropic-calendar .rdp-day_today:not(.rdp-day_selected) {
+.anthropic-calendar .rdp-today:not(.rdp-selected) {
   font-weight: 600;
   color: var(--accent);
+  position: relative;
+}
+
+.anthropic-calendar .rdp-today:not(.rdp-selected)::after {
+  content: '';
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: var(--accent);
 }
 
 /* Selected date */
