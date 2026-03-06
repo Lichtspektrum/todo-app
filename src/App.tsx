@@ -24,17 +24,6 @@ import { EmptyState } from './components/EmptyState';
 type ListTab = List | 'all';
 type SortMode = 'manual' | 'date';
 
-function LangToggle() {
-  const { lang, toggleLang } = useLang();
-  return (
-    <button className="lang-toggle" onClick={toggleLang} title="Switch language">
-      <span className={lang === 'zh' ? 'active' : ''}>中</span>
-      <span className="separator">·</span>
-      <span className={lang === 'en' ? 'active' : ''}>EN</span>
-    </button>
-  );
-}
-
 function TodoApp() {
   const { todos, addTodo, toggleTodo, deleteTodo, updateText, updatePriority, clearDone, reorderTodos } = useTodos();
   const [filter, setFilter] = useState<Filter>('all');
@@ -143,7 +132,6 @@ function TodoApp() {
 export default function App() {
   return (
     <LangProvider>
-      <LangToggle />
       <TodoApp />
     </LangProvider>
   );
