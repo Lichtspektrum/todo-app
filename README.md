@@ -1,5 +1,7 @@
 # Todo
 
+[English](#english)
+
 一个极简的待办清单。UI 参考了 Anthropic 的设计，暖米色调配铜橙点缀。支持深色模式、多语言、优先级标记、拖拽排序——功能够用，代码可读。
 
 ![Todo App](https://img.shields.io/badge/React-19-61DAFB?style=flat&logo=react) ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat&logo=typescript) ![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=flat&logo=vite)
@@ -66,5 +68,79 @@ npm run preview
 - **参考**：设计和交互逻辑都有，可以借鉴
 
 ## License
+
+MIT © LichtSpektrum
+
+---
+
+## English
+
+[回到中文](#todo)
+
+A minimal todo app. The UI draws from Anthropic's design language — warm off-white tones with a copper-orange accent. Dark mode, bilingual interface, priority levels, drag-to-reorder. Does what it needs to, and the code stays readable.
+
+![Todo App](https://img.shields.io/badge/React-19-61DAFB?style=flat&logo=react) ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat&logo=typescript) ![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=flat&logo=vite)
+
+### Features
+
+- **Task management** — add, inline-edit, delete, drag to reorder
+- **Priority levels** — high / medium / low, color-coded with a left-edge indicator
+- **Filter views** — All, Active, Done
+- **Progress bar** — live completion percentage
+- **Dark mode** — circular ripple transition animation
+- **Bilingual** — Chinese and English, toggle in the top-right corner
+- **Due dates** — optional, overdue tasks are highlighted
+- **Local storage** — state persists via `localStorage`, no login required
+- **Responsive** — works on mobile, tablet, and desktop
+
+### Getting Started
+
+**Requires:** [Node.js](https://nodejs.org) LTS
+
+**1. Clone**
+
+```bash
+git clone https://github.com/Lichtspektrum/todo-app.git
+cd todo-app
+```
+
+**2. Install**
+
+```bash
+npm install
+```
+
+**3. Dev server**
+
+```bash
+npm run dev
+```
+
+Open `http://localhost:5173` in your browser.
+
+**Production build**
+
+```bash
+npm run build
+npm run preview
+```
+
+### Tech Stack
+
+- [React 19](https://react.dev) — UI framework
+- [TypeScript](https://www.typescriptlang.org) — type safety
+- [Vite](https://vite.dev) — build tool
+- [dnd-kit](https://docs.dndkit.com) — drag and drop
+- [View Transitions API](https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API) — theme switch animation
+
+### Design Notes
+
+The goal was a todo app that's complete without being bloated. The structure is intentionally simple — a good starting point if you're learning React, TypeScript, or the Vite workflow.
+
+- **Learn** — the code is light on comments but easy to follow; try modifying or extending it
+- **Use** — works fine as a daily driver in a browser tab
+- **Reference** — design decisions and interaction patterns are all there to borrow
+
+### License
 
 MIT © LichtSpektrum
