@@ -469,6 +469,15 @@ h1 {
 .todo-item.dragging {
   box-shadow: 0 4px 20px rgba(0,0,0,0.12);
   border-color: var(--accent);
+  border-style: dashed;
+  background: transparent;
+}
+
+/* DragOverlay styles */
+[data-theme="dark"] .todo-item.dragging {
+  border-color: var(--accent);
+  border-style: dashed;
+  background: rgba(26, 26, 26, 0.5);
 }
 
 /* Priority indicator - left border strip */

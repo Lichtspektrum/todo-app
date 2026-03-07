@@ -13,14 +13,15 @@ const PRIORITIES: Priority[] = ['high', 'medium', 'low'];
 export function InputArea({ onAdd, defaultList }: Props) {
   const { t } = useLang();
   const [priority, setPriority] = useState<Priority>('medium');
-  const [list, setList] = useState<List>(defaultList);
+  const [userSelectedList, setUserSelectedList] = useState<List | null>(null);
   const [dueDate, setDueDate] = useState<Date | undefined>();
-  const [userChangedList, setUserChangedList] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Use user selected list if available, otherwise fall back to defaultList prop
+  const effectiveList = userSelectedList ?? defaultList;
+
   function handleListChange(l: List) {
-    setUserChangedList(true);
-    setList(l);
+    setUserSelectedList(l);
   }
 
   function handleAdd() {
@@ -32,17 +33,13 @@ export function InputArea({ onAdd, defaultList }: Props) {
       ? `${dueDate.getFullYear()}-${String(dueDate.getMonth() + 1).padStart(2, '0')}-${String(dueDate.getDate()).padStart(2, '0')}`
       : undefined;
 
-    onAdd(text, priority, list, dateStr);
+    onAdd(text, priority, effectiveList, dateStr);
     
     inputRef.current!.value = '';
     setDueDate(undefined);
-    setUserChangedList(false);
-    setList(defaultList);
+    setUserSelectedList(null);
     inputRef.current!.focus();
   }
-
-  // Sync list to defaultList when user hasn't manually overridden
-  const effectiveList = userChangedList ? list : defaultList;
 
   return (
     <div className="input-area">

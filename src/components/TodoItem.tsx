@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, memo } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { format, isToday, isTomorrow, isYesterday, isBefore, startOfDay, parseISO } from 'date-fns';
@@ -12,6 +12,7 @@ interface Props {
   onDelete: () => void;
   onUpdateText: (text: string) => void;
   onUpdatePriority: (priority: Priority) => void;
+  isOverlay?: boolean;
 }
 
 const NEXT_PRIORITY: Record<Priority, Priority> = { high: 'medium', medium: 'low', low: 'high' };
@@ -31,25 +32,30 @@ function formatDate(dueDate: string, localeKey: 'zhCN' | 'enUS'): string {
   return format(date, 'MMM d, EEE', { locale: locales[localeKey] });
 }
 
-export function TodoItem({ todo, onToggle, onDelete, onUpdateText, onUpdatePriority }: Props) {
+export const TodoItem = memo(function TodoItem({ todo, onToggle, onDelete, onUpdateText, onUpdatePriority, isOverlay }: Props) {
   const { t } = useLang();
   const divRef = useRef<HTMLDivElement>(null);
 
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: todo.id });
+  const sortable = useSortable({ id: todo.id, disabled: isOverlay });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = sortable;
 
-  const style = {
+  const style = isOverlay ? {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1,
+    boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+    cursor: 'grabbing',
+  } : {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.4 : 1,
     zIndex: isDragging ? 10 : undefined,
   };
 
   useEffect(() => {
-    if (divRef.current) {
+    if (divRef.current && divRef.current.textContent !== todo.text) {
       divRef.current.textContent = todo.text;
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [todo.id]);
+  }, [todo.text]);
 
   function handleBlur() {
     const text = divRef.current?.textContent ?? '';
@@ -74,36 +80,53 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdateText, onUpdatePrior
       <div
         className={`priority-indicator ${todo.priority}`}
         role="button"
+        tabIndex={0}
         title={t.priorityTip(t.priorityLabels[todo.priority])}
         aria-label={t.priorityTip(t.priorityLabels[todo.priority])}
         onClick={() => onUpdatePriority(NEXT_PRIORITY[todo.priority])}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onUpdatePriority(NEXT_PRIORITY[todo.priority]);
+          }
+        }}
       />
-      <div
-        className="drag-handle"
-        title={t.dragHandle}
-        {...attributes}
-        {...listeners}
-      >
-        <svg viewBox="0 0 10 16">
-          <circle cx="3" cy="3" r="1.2" />
-          <circle cx="7" cy="3" r="1.2" />
-          <circle cx="3" cy="8" r="1.2" />
-          <circle cx="7" cy="8" r="1.2" />
-          <circle cx="3" cy="13" r="1.2" />
-          <circle cx="7" cy="13" r="1.2" />
-        </svg>
-      </div>
-      <div
+      {!isOverlay && (
+        <div
+          className="drag-handle"
+          title={t.dragHandle}
+          aria-label={t.dragHandle}
+          {...attributes}
+          {...listeners}
+        >
+          <svg viewBox="0 0 10 16">
+            <circle cx="3" cy="3" r="1.2" />
+            <circle cx="7" cy="3" r="1.2" />
+            <circle cx="3" cy="8" r="1.2" />
+            <circle cx="7" cy="8" r="1.2" />
+            <circle cx="3" cy="13" r="1.2" />
+            <circle cx="7" cy="13" r="1.2" />
+          </svg>
+        </div>
+      )}
+      <button
         className={`checkbox${todo.done ? ' checked' : ''}`}
         role="checkbox"
         aria-checked={todo.done}
         aria-label={todo.text}
         onClick={onToggle}
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onToggle();
+          }
+        }}
       >
         <svg viewBox="0 0 12 10">
           <polyline points="1 5 4.5 8.5 11 1" />
         </svg>
-      </div>
+      </button>
       <div className="todo-main">
         <div
           ref={divRef}
@@ -135,4 +158,4 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdateText, onUpdatePrior
       </button>
     </div>
   );
-}
+});

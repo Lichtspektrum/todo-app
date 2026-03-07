@@ -6,6 +6,8 @@ import {
   useSensor,
   useSensors,
   type DragEndEvent,
+  type DragStartEvent,
+  DragOverlay,
 } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import { compareAsc } from 'date-fns';
@@ -29,6 +31,7 @@ function TodoApp() {
   const [filter, setFilter] = useState<Filter>('all');
   const [listTab, setListTab] = useState<ListTab>('all');
   const [sortMode, setSortMode] = useState<SortMode>('manual');
+  const [activeId, setActiveId] = useState<string | null>(null);
   const { t } = useLang();
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
@@ -68,14 +71,26 @@ function TodoApp() {
     if (filter === 'done') setFilter('all');
   }
 
+  function handleDragStart(event: DragStartEvent) {
+    setActiveId(event.active.id as string);
+  }
+
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
-    if (!over || active.id === over.id || sortMode === 'date') return; // Disable drag reordering if sorted by date
+    setActiveId(null);
+    
+    if (!over || active.id === over.id || sortMode === 'date') return;
+
+    // Only allow reordering when viewing all items without filters
+    if (filter !== 'all' || listTab !== 'all') return;
 
     const oldIndex = todos.findIndex(t => t.id === active.id);
     const newIndex = todos.findIndex(t => t.id === over.id);
+    if (oldIndex === -1 || newIndex === -1) return;
     reorderTodos(arrayMove(todos, oldIndex, newIndex));
   }
+
+  const activeTodo = activeId ? todos.find(t => t.id === activeId) : null;
 
   const defaultList: List = listTab === 'all' ? 'work' : listTab;
 
@@ -95,9 +110,9 @@ function TodoApp() {
             padding: '4px 8px', 
             borderRadius: '6px', 
             fontSize: '0.85rem',
-            background: 'var(--bg-secondary)',
+            background: 'var(--surface)',
             color: 'var(--text-secondary)',
-            border: '1px solid var(--border-color)',
+            border: '1px solid var(--border)',
             cursor: 'pointer'
           }}
         >
@@ -105,7 +120,12 @@ function TodoApp() {
         </button>
       </div>
 
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <DndContext 
+        sensors={sensors} 
+        collisionDetection={closestCenter} 
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
         <SortableContext items={visibleTodos.map(t => t.id)} strategy={verticalListSortingStrategy}>
           <div className="todo-list">
             {visibleTodos.length === 0 ? (
@@ -124,6 +144,21 @@ function TodoApp() {
             )}
           </div>
         </SortableContext>
+        <DragOverlay dropAnimation={{
+          duration: 400,
+          easing: 'cubic-bezier(0.25, 0.8, 0.25, 1)',
+        }}>
+          {activeTodo ? (
+            <TodoItem
+              todo={activeTodo}
+              onToggle={() => {}}
+              onDelete={() => {}}
+              onUpdateText={() => {}}
+              onUpdatePriority={() => {}}
+              isOverlay
+            />
+          ) : null}
+        </DragOverlay>
       </DndContext>
     </div>
   );
