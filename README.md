@@ -4,6 +4,8 @@
 
 一个极简的待办清单。UI 参考了 Anthropic 的设计，暖米色调配铜橙点缀。支持深色模式、多语言、优先级标记、拖拽排序——功能够用，代码可读。
 
+**[→ 在线体验](https://todo-app-tau-sandy-90.vercel.app)**
+
 ![Todo App](https://img.shields.io/badge/React-19-61DAFB?style=flat&logo=react) ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat&logo=typescript) ![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=flat&logo=vite)
 
 ## 有什么功能
@@ -78,6 +80,8 @@ MIT © LichtSpektrum
 [回到中文](#todo)
 
 A minimal todo app. The UI draws from Anthropic's design language — warm off-white tones with a copper-orange accent. Dark mode, bilingual interface, priority levels, drag-to-reorder. Does what it needs to, and the code stays readable.
+
+**[→ Live Demo](https://todo-app-tau-sandy-90.vercel.app)**
 
 ![Todo App](https://img.shields.io/badge/React-19-61DAFB?style=flat&logo=react) ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat&logo=typescript) ![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=flat&logo=vite)
 
