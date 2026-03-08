@@ -22,6 +22,7 @@ import { Filters } from './components/Filters';
 import { ListTabs } from './components/ListTabs';
 import { TodoItem } from './components/TodoItem';
 import { EmptyState } from './components/EmptyState';
+import { Footer } from './components/Footer';
 
 type ListTab = List | 'all';
 type SortMode = 'manual' | 'date';
@@ -160,6 +161,7 @@ function TodoApp() {
           ) : null}
         </DragOverlay>
       </DndContext>
+      <Footer />
     </div>
   );
 }
