@@ -376,6 +376,24 @@ h1 {
   stroke-linecap: round;
 }
 
+/* Sort button */
+.sort-btn {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  background: var(--surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.sort-btn:hover {
+  color: var(--text);
+  border-color: var(--border-hover);
+}
+
 /* Filters */
 .filters {
   display: flex;
@@ -546,6 +564,30 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: 3px;
+}
+
+/* Add date button (shown on hover when task has no due date) */
+.add-date-btn {
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.todo-item:hover .add-date-btn {
+  opacity: 0.6;
+}
+
+.add-date-btn:hover {
+  opacity: 1 !important;
 }
 
 /* Due date badge */

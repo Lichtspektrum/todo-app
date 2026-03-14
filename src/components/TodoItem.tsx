@@ -162,37 +162,47 @@ export const TodoItem = memo(function TodoItem({ todo, onToggle, onDelete, onUpd
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
         />
-        {todo.dueDate && (
-          onUpdateDueDate ? (
-            <div ref={datePickerRef} style={{ position: 'relative', display: 'inline-block' }}>
+        {onUpdateDueDate ? (
+          <div ref={datePickerRef} style={{ position: 'relative', display: 'inline-block' }}>
+            {todo.dueDate ? (
               <button
                 className={`due-date-badge ${dueDateStatus}`}
                 onClick={() => setDatePickerOpen(o => !o)}
               >
                 {dueDateLabel()}
               </button>
-              {datePickerOpen && (
-                <div className="datepicker-popover" style={{ left: 0, right: 'auto' }}>
-                  <DayPicker
-                    mode="single"
-                    selected={parseISO(todo.dueDate)}
-                    onSelect={(date) => {
-                      onUpdateDueDate(date ? format(date, 'yyyy-MM-dd') : undefined);
-                      setDatePickerOpen(false);
-                    }}
-                    locale={currentLocale}
-                    showOutsideDays
-                    className="anthropic-calendar"
-                  />
-                </div>
-              )}
-            </div>
-          ) : (
-            <span className={`due-date-badge ${dueDateStatus}`}>
-              {dueDateLabel()}
-            </span>
-          )
-        )}
+            ) : (
+              <button className="add-date-btn" onClick={() => setDatePickerOpen(o => !o)}>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                {t.dueDatePlaceholder}
+              </button>
+            )}
+            {datePickerOpen && (
+              <div className="datepicker-popover" style={{ left: 0, right: 'auto' }}>
+                <DayPicker
+                  mode="single"
+                  selected={todo.dueDate ? parseISO(todo.dueDate) : undefined}
+                  onSelect={(date) => {
+                    onUpdateDueDate(date ? format(date, 'yyyy-MM-dd') : undefined);
+                    setDatePickerOpen(false);
+                  }}
+                  locale={currentLocale}
+                  showOutsideDays
+                  className="anthropic-calendar"
+                />
+              </div>
+            )}
+          </div>
+        ) : todo.dueDate ? (
+          <span className={`due-date-badge ${dueDateStatus}`}>
+            {dueDateLabel()}
+          </span>
+        ) : null}
       </div>
       <button
         className={`priority-badge ${todo.priority}`}

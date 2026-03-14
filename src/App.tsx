@@ -13,7 +13,7 @@ import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-ki
 import { compareAsc } from 'date-fns';
 import type { Filter, Priority, List } from './types';
 import { useTodos } from './hooks/useTodos';
-import { LangProvider, useLang } from './contexts/LangContext';
+import { useLang } from './contexts/LangContext';
 import { Header } from './components/Header';
 import { InputArea } from './components/InputArea';
 import { ProgressBar } from './components/ProgressBar';
@@ -105,17 +105,9 @@ function TodoApp() {
       
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
         <Filters filter={filter} onChange={setFilter} />
-        <button 
+        <button
+          className="sort-btn"
           onClick={() => setSortMode(m => m === 'manual' ? 'date' : 'manual')}
-          style={{ 
-            padding: '4px 8px', 
-            borderRadius: '6px', 
-            fontSize: '0.85rem',
-            background: 'var(--surface)',
-            color: 'var(--text-secondary)',
-            border: '1px solid var(--border)',
-            cursor: 'pointer'
-          }}
         >
           {sortMode === 'manual' ? t.sortByDate : t.sortByManual}
         </button>
@@ -168,9 +160,5 @@ function TodoApp() {
 }
 
 export default function App() {
-  return (
-    <LangProvider>
-      <TodoApp />
-    </LangProvider>
-  );
+  return <TodoApp />;
 }

@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { format } from 'date-fns';
 import type { Priority, List } from '../types';
 import { useLang } from '../contexts/LangContext';
 import { DatePicker } from './DatePicker';
@@ -28,10 +29,7 @@ export function InputArea({ onAdd, defaultList }: Props) {
     const text = inputRef.current?.value.trim() ?? '';
     if (!text) return;
     
-    // Format date to string YYYY-MM-DD for the backend/storage
-    const dateStr = dueDate 
-      ? `${dueDate.getFullYear()}-${String(dueDate.getMonth() + 1).padStart(2, '0')}-${String(dueDate.getDate()).padStart(2, '0')}`
-      : undefined;
+    const dateStr = dueDate ? format(dueDate, 'yyyy-MM-dd') : undefined;
 
     onAdd(text, priority ?? 'medium', effectiveList, dateStr);
 
