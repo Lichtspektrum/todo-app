@@ -462,7 +462,6 @@ h1 {
   animation: slideIn 0.2s ease;
   transition: border-color 0.15s, box-shadow 0.15s, opacity 0.15s;
   position: relative;
-  overflow: hidden;
 }
 
 .todo-item:hover {
@@ -496,6 +495,7 @@ h1 {
   width: 4px;
   cursor: pointer;
   transition: width 0.15s;
+  border-radius: 12px 0 0 12px;
 }
 
 .todo-item:hover .priority-indicator {
