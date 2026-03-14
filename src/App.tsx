@@ -28,7 +28,7 @@ type ListTab = List | 'all';
 type SortMode = 'manual' | 'date';
 
 function TodoApp() {
-  const { todos, addTodo, toggleTodo, deleteTodo, updateText, updatePriority, clearDone, reorderTodos } = useTodos();
+  const { todos, addTodo, toggleTodo, deleteTodo, updateText, updatePriority, updateDueDate, clearDone, reorderTodos } = useTodos();
   const [filter, setFilter] = useState<Filter>('all');
   const [listTab, setListTab] = useState<ListTab>('all');
   const [sortMode, setSortMode] = useState<SortMode>('manual');
@@ -140,6 +140,7 @@ function TodoApp() {
                   onDelete={() => deleteTodo(todo.id)}
                   onUpdateText={text => updateText(todo.id, text)}
                   onUpdatePriority={priority => updatePriority(todo.id, priority)}
+                  onUpdateDueDate={dueDate => updateDueDate(todo.id, dueDate)}
                 />
               ))
             )}

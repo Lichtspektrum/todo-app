@@ -1,8 +1,9 @@
-import { useRef, useEffect, memo } from 'react';
+import { useRef, useEffect, memo, useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { format, isToday, isTomorrow, isYesterday, isBefore, startOfDay, parseISO } from 'date-fns';
 import { zhCN, enUS } from 'date-fns/locale';
+import { DayPicker } from 'react-day-picker';
 import type { Todo, Priority } from '../types';
 import { useLang } from '../contexts/LangContext';
 
@@ -12,6 +13,7 @@ interface Props {
   onDelete: () => void;
   onUpdateText: (text: string) => void;
   onUpdatePriority: (priority: Priority) => void;
+  onUpdateDueDate?: (dueDate: string | undefined) => void;
   isOverlay?: boolean;
 }
 
@@ -32,9 +34,11 @@ function formatDate(dueDate: string, localeKey: 'zhCN' | 'enUS'): string {
   return format(date, 'MMM d, EEE', { locale: locales[localeKey] });
 }
 
-export const TodoItem = memo(function TodoItem({ todo, onToggle, onDelete, onUpdateText, onUpdatePriority, isOverlay }: Props) {
+export const TodoItem = memo(function TodoItem({ todo, onToggle, onDelete, onUpdateText, onUpdatePriority, onUpdateDueDate, isOverlay }: Props) {
   const { t } = useLang();
   const divRef = useRef<HTMLDivElement>(null);
+  const datePickerRef = useRef<HTMLDivElement>(null);
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
 
   const sortable = useSortable({ id: todo.id, disabled: isOverlay });
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = sortable;
@@ -57,6 +61,17 @@ export const TodoItem = memo(function TodoItem({ todo, onToggle, onDelete, onUpd
     }
   }, [todo.text]);
 
+  useEffect(() => {
+    if (!datePickerOpen) return;
+    function handle(e: MouseEvent) {
+      if (datePickerRef.current && !datePickerRef.current.contains(e.target as Node)) {
+        setDatePickerOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handle);
+    return () => document.removeEventListener('mousedown', handle);
+  }, [datePickerOpen]);
+
   function handleBlur() {
     const text = divRef.current?.textContent ?? '';
     onUpdateText(text);
@@ -70,6 +85,16 @@ export const TodoItem = memo(function TodoItem({ todo, onToggle, onDelete, onUpd
   }
 
   const dueDateStatus = todo.dueDate ? getDueDateStatus(todo.dueDate) : null;
+  const currentLocale = locales[t.dateFnsLocaleKey as 'zhCN' | 'enUS'];
+
+  function dueDateLabel() {
+    if (!dueDateStatus || !todo.dueDate) return null;
+    if (dueDateStatus === 'overdue') return t.dueDateOverdue;
+    if (dueDateStatus === 'yesterday') return t.dueDateYesterday;
+    if (dueDateStatus === 'today') return t.dueDateToday;
+    if (dueDateStatus === 'tomorrow') return t.dueDateTomorrow;
+    return formatDate(todo.dueDate, t.dateFnsLocaleKey as 'zhCN' | 'enUS');
+  }
 
   return (
     <div
@@ -138,18 +163,44 @@ export const TodoItem = memo(function TodoItem({ todo, onToggle, onDelete, onUpd
           onKeyDown={handleKeyDown}
         />
         {todo.dueDate && (
-          <span className={`due-date-badge ${dueDateStatus}`}>
-            {dueDateStatus === 'overdue' ? t.dueDateOverdue :
-             dueDateStatus === 'yesterday' ? t.dueDateYesterday :
-             dueDateStatus === 'today' ? t.dueDateToday :
-             dueDateStatus === 'tomorrow' ? t.dueDateTomorrow :
-             formatDate(todo.dueDate, t.dateFnsLocaleKey as "zhCN" | "enUS")}
-          </span>
+          onUpdateDueDate ? (
+            <div ref={datePickerRef} style={{ position: 'relative', display: 'inline-block' }}>
+              <button
+                className={`due-date-badge ${dueDateStatus}`}
+                onClick={() => setDatePickerOpen(o => !o)}
+              >
+                {dueDateLabel()}
+              </button>
+              {datePickerOpen && (
+                <div className="datepicker-popover" style={{ left: 0, right: 'auto' }}>
+                  <DayPicker
+                    mode="single"
+                    selected={parseISO(todo.dueDate)}
+                    onSelect={(date) => {
+                      onUpdateDueDate(date ? format(date, 'yyyy-MM-dd') : undefined);
+                      setDatePickerOpen(false);
+                    }}
+                    locale={currentLocale}
+                    showOutsideDays
+                    className="anthropic-calendar"
+                  />
+                </div>
+              )}
+            </div>
+          ) : (
+            <span className={`due-date-badge ${dueDateStatus}`}>
+              {dueDateLabel()}
+            </span>
+          )
         )}
       </div>
-      <span className={`priority-badge ${todo.priority}`}>
+      <button
+        className={`priority-badge ${todo.priority}`}
+        title={t.priorityTip(t.priorityLabels[todo.priority])}
+        onClick={() => onUpdatePriority(NEXT_PRIORITY[todo.priority])}
+      >
         {t.priorityLabels[todo.priority]}
-      </span>
+      </button>
       <button className="delete-btn" title={t.deleteTitle} aria-label={t.deleteTitle} onClick={onDelete}>
         <svg viewBox="0 0 14 14">
           <line x1="2" y1="2" x2="12" y2="12" />
