@@ -35,6 +35,11 @@ button, input, select, textarea {
   --priority-medium-bg: #FDF6EC;
   --priority-low: #5A8A6B;
   --priority-low-bg: #F0F6F2;
+
+  --border-hover: #D4CFC7;
+  --surface-done: #F9F7F3;
+  --surface-action-hover: #F0EBE3;
+  --checkbox-bg: #FFFFFF;
 }
 
 [data-theme="dark"] {
@@ -54,6 +59,11 @@ button, input, select, textarea {
   --priority-medium-bg: #2A2015;
   --priority-low: #7A9A7B;
   --priority-low-bg: #162018;
+
+  --border-hover: #3A3A3A;
+  --surface-done: #161616;
+  --surface-action-hover: #2A2A2A;
+  --checkbox-bg: #1A1A1A;
 }
 
 body {
@@ -456,19 +466,11 @@ h1 {
 }
 
 .todo-item:hover {
-  border-color: #D4CFC7;
-}
-
-[data-theme="dark"] .todo-item:hover {
-  border-color: #3A3A3A;
+  border-color: var(--border-hover);
 }
 
 .todo-item.done {
-  background: #F9F7F3;
-}
-
-[data-theme="dark"] .todo-item.done {
-  background: #161616;
+  background: var(--surface-done);
 }
 
 .todo-item.dragging {
@@ -584,11 +586,7 @@ h1 {
   align-items: center;
   justify-content: center;
   transition: all 0.15s;
-  background: white;
-}
-
-[data-theme="dark"] .checkbox {
-  background: #1A1A1A;
+  background: var(--checkbox-bg);
 }
 
 .todo-item:hover .checkbox {
@@ -688,11 +686,7 @@ h1 {
 }
 
 .delete-btn:hover {
-  background: #F0EBE3;
-}
-
-[data-theme="dark"] .delete-btn:hover {
-  background: #2A2A2A;
+  background: var(--surface-action-hover);
 }
 
 .delete-btn svg {
@@ -755,11 +749,7 @@ h1 {
 }
 
 .lang-toggle:hover {
-  border-color: #D4CFC7;
-}
-
-[data-theme="dark"] .lang-toggle:hover {
-  border-color: #3A3A3A;
+  border-color: var(--border-hover);
 }
 
 .lang-toggle span.active {

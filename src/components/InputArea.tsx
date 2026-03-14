@@ -8,11 +8,11 @@ interface Props {
   defaultList: List;
 }
 
-const PRIORITIES: Priority[] = ['high', 'medium', 'low'];
+const PRIORITIES: Priority[] = ['low', 'medium', 'high'];
 
 export function InputArea({ onAdd, defaultList }: Props) {
   const { t } = useLang();
-  const [priority, setPriority] = useState<Priority>('medium');
+  const [priority, setPriority] = useState<Priority | null>(null);
   const [userSelectedList, setUserSelectedList] = useState<List | null>(null);
   const [dueDate, setDueDate] = useState<Date | undefined>();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -33,10 +33,11 @@ export function InputArea({ onAdd, defaultList }: Props) {
       ? `${dueDate.getFullYear()}-${String(dueDate.getMonth() + 1).padStart(2, '0')}-${String(dueDate.getDate()).padStart(2, '0')}`
       : undefined;
 
-    onAdd(text, priority, effectiveList, dateStr);
-    
+    onAdd(text, priority ?? 'medium', effectiveList, dateStr);
+
     inputRef.current!.value = '';
     setDueDate(undefined);
+    setPriority(null);
     setUserSelectedList(null);
     inputRef.current!.focus();
   }
@@ -58,7 +59,7 @@ export function InputArea({ onAdd, defaultList }: Props) {
               className={`priority-dot ${p}${priority === p ? ' active' : ''}`}
               title={t.priorityTitles[p]}
               aria-label={t.priorityTitles[p]}
-              onClick={() => setPriority(p)}
+              onClick={() => setPriority(prev => prev === p ? null : p)}
             />
           ))}
         </div>

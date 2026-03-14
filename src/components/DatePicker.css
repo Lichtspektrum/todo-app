@@ -28,13 +28,8 @@
 
 .datepicker-trigger:hover,
 .datepicker-trigger:focus {
-  border-color: #D4CFC7;
+  border-color: var(--border-hover);
   color: var(--text);
-}
-
-[data-theme="dark"] .datepicker-trigger:hover,
-[data-theme="dark"] .datepicker-trigger:focus {
-  border-color: #4A4A4A;
 }
 
 .calendar-icon {

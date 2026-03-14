@@ -17,11 +17,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => {
     const saved = localStorage.getItem('theme') as Theme | null;
     if (saved === 'light' || saved === 'dark') return saved;
-    
-    const currentHour = new Date().getHours();
-    // Assuming sunset is ~18:00 (6 PM) and sunrise is ~06:00 (6 AM)
-    const isNightTime = currentHour >= 18 || currentHour < 6;
-    return isNightTime ? 'dark' : 'light';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
 
   useEffect(() => {
