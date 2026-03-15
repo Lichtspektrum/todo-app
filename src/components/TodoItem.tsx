@@ -56,10 +56,11 @@ export const TodoItem = memo(function TodoItem({ todo, onToggle, onDelete, onUpd
   };
 
   useEffect(() => {
-    if (divRef.current && divRef.current.textContent !== todo.text) {
+    if (divRef.current) {
       divRef.current.textContent = todo.text;
     }
-  }, [todo.text]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (!datePickerOpen) return;

@@ -17,13 +17,11 @@ export function Stats({ total, done, onClearDone }: Props) {
           <><span>{active}</span>{t.activeSuffix} · <span>{done}</span>{t.doneSuffix}</>
         )}
       </div>
-      <button
-        className="clear-done"
-        style={{ visibility: done > 0 ? 'visible' : 'hidden' }}
-        onClick={onClearDone}
-      >
-        {t.clearDone}
-      </button>
+      {done > 0 && (
+        <button className="clear-done" onClick={onClearDone}>
+          {t.clearDone}
+        </button>
+      )}
     </div>
   );
 }

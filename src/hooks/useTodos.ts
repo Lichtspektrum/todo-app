@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { Todo, Priority, List } from '../types';
 
 function load(): Todo[] {
@@ -11,13 +11,18 @@ function load(): Todo[] {
 
 export function useTodos() {
   const [todos, setTodos] = useState<Todo[]>(load);
+  const saveTimer = useRef<ReturnType<typeof setTimeout>>();
 
   useEffect(() => {
-    try {
-      localStorage.setItem('todos', JSON.stringify(todos));
-    } catch {
-      // Storage quota exceeded or unavailable
-    }
+    clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => {
+      try {
+        localStorage.setItem('todos', JSON.stringify(todos));
+      } catch {
+        // Storage quota exceeded or unavailable
+      }
+    }, 300);
+    return () => clearTimeout(saveTimer.current);
   }, [todos]);
 
   function addTodo(text: string, priority: Priority, list: List, dueDate?: string) {
