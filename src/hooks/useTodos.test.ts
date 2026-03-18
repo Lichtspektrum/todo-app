@@ -268,3 +268,65 @@ describe('useTodos — 现有行为', () => {
     expect(result.current.todos[0].id).toBe('saved-1');
   });
 });
+
+describe('useTodos — undo (new behavior)', () => {
+  it('startRemoveTodo marks id in removingIds without deleting from todos', () => {
+    const { result } = renderHook(() => useTodos());
+    act(() => { result.current.addTodo('Task', 'low', 'life', undefined); });
+    const id = result.current.todos[0].id;
+    act(() => { result.current.startRemoveTodo(id); });
+    expect(result.current.todos).toHaveLength(1); // still in todos
+    expect(result.current.removingIds.has(id)).toBe(true);
+  });
+
+  it('onRemoveComplete removes task from todos and removingIds', () => {
+    const { result } = renderHook(() => useTodos());
+    act(() => { result.current.addTodo('Task', 'low', 'life', undefined); });
+    const id = result.current.todos[0].id;
+    act(() => { result.current.startRemoveTodo(id); });
+    act(() => { result.current.onRemoveComplete(id); });
+    expect(result.current.todos).toHaveLength(0);
+    expect(result.current.removingIds.has(id)).toBe(false);
+  });
+
+  it('undo after startRemoveTodo restores todos and clears removingIds', () => {
+    const { result } = renderHook(() => useTodos());
+    act(() => { result.current.addTodo('Task', 'low', 'life', undefined); });
+    const id = result.current.todos[0].id;
+    act(() => { result.current.startRemoveTodo(id); });
+    act(() => { result.current.undo(); });
+    expect(result.current.todos).toHaveLength(1);
+    expect(result.current.removingIds.size).toBe(0);
+  });
+
+  it('undo after clearDone restores done tasks', () => {
+    const { result } = renderHook(() => useTodos());
+    act(() => { result.current.addTodo('Keep', 'low', 'life', undefined); });
+    act(() => { result.current.addTodo('Restore', 'low', 'life', undefined); });
+    const doneId = result.current.todos[0].id;
+    act(() => { result.current.toggleTodo(doneId); });
+    act(() => { result.current.clearDone(); });
+    expect(result.current.todos).toHaveLength(1);
+    act(() => { result.current.undo(); });
+    expect(result.current.todos).toHaveLength(2);
+  });
+
+  it('undo does nothing if no snapshot exists', () => {
+    const { result } = renderHook(() => useTodos());
+    act(() => { result.current.addTodo('Task', 'low', 'life', undefined); });
+    act(() => { result.current.undo(); }); // no snapshot
+    expect(result.current.todos).toHaveLength(1); // unchanged
+  });
+
+  it('clearUndo removes the snapshot', () => {
+    const { result } = renderHook(() => useTodos());
+    act(() => { result.current.addTodo('Task', 'low', 'life', undefined); });
+    const id = result.current.todos[0].id;
+    act(() => { result.current.startRemoveTodo(id); });
+    act(() => { result.current.clearUndo(); });
+    act(() => { result.current.onRemoveComplete(id); });
+    // undo now does nothing
+    act(() => { result.current.undo(); });
+    expect(result.current.todos).toHaveLength(0);
+  });
+});
