@@ -30,12 +30,6 @@ vi.stubGlobal('crypto', {
 
 beforeEach(() => {
   localStorageMock.clear();
-  localStorageMock.getItem.mockImplementation((key: string) => {
-    // Access inner store via closure — reset in clear()
-    return (localStorageMock as any)._store?.[key] ?? null;
-  });
-  // Re-wire so clear actually resets the internal store that getItem reads.
-  // Easiest: just re-assign a fresh mock each test.
   uuidCounter = 0;
   vi.useFakeTimers();
 });
