@@ -42,9 +42,15 @@
 - 同时高度折叠到 0（使用 `grid-template-rows: 1fr → 0fr` 技巧，避免 JS 计算高度）
 - 其他任务平滑上移填补空间
 
-**实现方式：**
-- 删除时先给元素加 `data-removing` 属性触发动画，`animationend` 回调后再从状态中移除
-- 或使用 React 的 `key` + CSS animation + 延迟删除状态
+**实现方式（选定方案）：`data-removing` + 延迟状态删除**
+
+1. 调用 `deleteTodo(id)` 时，先将该 id 加入 `removingIds: Set<string>` 状态（`useTodos` 中维护），触发 `TodoItem` 的 CSS 离场动画
+2. `TodoItem` 监听 `animationend`，动画结束后调用 `onRemoveComplete(id)`，此时才从 `todos` 和 `removingIds` 中真正删除
+3. `App.tsx` 传给 dnd-kit `SortableContext` 的 `items` 数组来自 `visibleTodos.map(t => t.id)`，而 `visibleTodos` 在 `removingIds` 期间仍包含该 id，因此 dnd-kit items 与实际渲染始终保持同步，不会产生警告或位置错位
+
+**不采用** React `key` 方案，因为 key 变化会导致组件整体卸载，dnd-kit 的 sortable 状态会丢失。
+
+**StrictMode 说明：** React 19 开发模式下 `useEffect` 双调用不影响 `animationend` 事件，CSS animation 只播放一次，无需特殊处理。
 
 **时长：** 约 250ms
 
@@ -63,7 +69,27 @@
 - 新建 `src/components/Toast.tsx`：单个 Toast 的 UI
 - 新建 `src/hooks/useToast.ts`：管理 toast 队列（最多同时显示 1 条）
 - Toast 从底部滑入，2 秒后自动消失，悬停时暂停倒计时
-- 撤销逻辑：在 `useTodos` 中保存上一步快照，撤销时恢复
+- 撤销逻辑：在 `useTodos` 中保存上一步快照（`undoSnapshot: Todo[] | null`），撤销时恢复
+
+**快照生命周期（状态机）：**
+
+```
+初始：undoSnapshot = null
+
+deleteTodo(id) / clearDone()
+  → undoSnapshot = [...todos 当前值]
+  → 执行删除操作
+  → showToast({ message, onUndo: () => restoreSnapshot() })
+
+Toast 出现后：
+  - 2 秒倒计时结束 → undoSnapshot = null（清除快照）
+  - 用户点撤销 → todos = undoSnapshot，undoSnapshot = null，Toast 消失
+  - 期间再次触发 deleteTodo/clearDone → undoSnapshot 被新快照覆盖，旧操作不可撤销
+
+新建任务 / 其他操作不写快照，不影响 undoSnapshot。
+```
+
+**多操作竞态处理：** 最多保留一条撤销记录。新的可撤销操作会覆盖旧快照，Toast 也会被新 Toast 替换（队列长度为 1），用户看到的 Toast 与可撤销的操作始终一致。
 
 **样式：** 沿用项目暖米色调，深色背景（`#3d2b1f`）+ 米色文字，与现有设计一致
 
@@ -78,7 +104,7 @@
 - 弹性曲线：`cubic-bezier(0.34, 1.56, 0.64, 1)`（轻微过冲）
 - 时长约 300ms
 
-**实现位置：** `TodoItem.tsx`，新任务加 `data-new` 属性，CSS animation 触发后移除
+**实现位置：** `TodoItem.tsx`，新任务挂载时自带入场 CSS animation（通过 CSS class 而非 data 属性），animation 只需在元素首次出现时触发，无需手动移除属性。React 19 StrictMode 的双 mount 会导致动画重播（表现为轻微闪烁），属正常现象，生产构建中不存在。
 
 ---
 
@@ -102,11 +128,15 @@
 **目标：** 通过基础 A11y 实践，体现工程规范意识
 
 **改动范围：**
-- `TodoItem`：勾选按钮加 `aria-label="标记为完成"` / `aria-checked`，删除按钮加 `aria-label="删除任务"`
+- `TodoItem`：
+  - 勾选按钮：`aria-label={t.markAsDone(todo.text)}`（动态，如「将『买咖啡豆』标记为完成」），`aria-checked={todo.done}`；i18n 中 `zh` / `en` 各增加一条模板字符串
+  - 删除按钮：`aria-label={t.deleteTask(todo.text)}`（同理，读屏器可区分不同任务的删除按钮）
+  - 优先级切换按钮：`aria-label={t.priority + ': ' + todo.priority}`
 - `Filters`：filter 按钮组加 `role="group"` + `aria-label="过滤视图"`，当前选中加 `aria-pressed`
-- `InputArea`：输入框加 `aria-label`，提交按钮加描述
+- `InputArea`：输入框加 `aria-label`，提交按钮加 `aria-label`
 - `Header`：主题切换、语言切换按钮加 `aria-label`
 - 键盘支持：`TodoItem` 支持 `Enter` 开始编辑，`Escape` 取消编辑，`Delete`/`Backspace` 删除（需 focus 在任务上时）
+- **i18n 新增字段：** `markAsDone`、`deleteTask` 需在 `src/i18n.ts` 的 `zh` / `en` 各增加对应函数或模板
 
 ---
 
@@ -125,14 +155,18 @@ useTodos
   ✓ 初始状态为空列表
   ✓ 添加任务
   ✓ 删除任务
+  ✓ 删除任务后可撤销（undoSnapshot 恢复）
   ✓ 切换任务完成状态
   ✓ 更新任务文字
   ✓ 设置优先级
   ✓ 设置截止日期
   ✓ 过滤：全部 / 待办 / 已完成
-  ✓ 清空已完成任务
+  ✓ 清空已完成任务后可撤销
+  ✓ 拖拽重排（reorderTodos）
   ✓ localStorage 持久化（mock localStorage）
 ```
+
+**不在单元测试范围：** Toast 的显示/消失行为（属 UI 层，由集成测试覆盖）；动画触发（纯 CSS，无需测试）。
 
 ---
 
@@ -156,5 +190,7 @@ useTodos
 | `src/components/InputArea.tsx` | 修改：新建滑入动画、A11y |
 | `src/components/Filters.tsx` | 修改：A11y |
 | `src/components/Header.tsx` | 修改：A11y |
-| `src/App.tsx` | 修改：Toast 集成、useMemo |
+| `src/App.tsx` | 修改：Toast 集成、useMemo、clearDone 包装为撤销版本 |
+| `src/components/Stats.tsx` | 修改：`onClearDone` 回调由 App.tsx 传入带撤销逻辑的版本，Stats 本身无需知道 Toast |
+| `src/i18n.ts` | 修改：新增 `markAsDone`、`deleteTask` i18n 字段（zh/en） |
 | `package.json` | 修改：添加 vitest、@testing-library/react |
