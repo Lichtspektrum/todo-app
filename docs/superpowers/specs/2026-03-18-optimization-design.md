@@ -44,9 +44,11 @@
 
 **实现方式（选定方案）：`data-removing` + 延迟状态删除**
 
-1. 调用 `deleteTodo(id)` 时，先将该 id 加入 `removingIds: Set<string>` 状态（`useTodos` 中维护），触发 `TodoItem` 的 CSS 离场动画
-2. `TodoItem` 监听 `animationend`，动画结束后调用 `onRemoveComplete(id)`，此时才从 `todos` 和 `removingIds` 中真正删除
+1. 调用 `deleteTodo(id)` 时，先将该 id 加入 `removingIds: Set<string>` 状态（在 `useTodos` 中维护，作为 return 接口的一部分对外暴露），触发 `TodoItem` 的 CSS 离场动画
+2. `TodoItem` 监听 `animationend`，动画结束后调用 `onRemoveComplete(id)`（同样由 `useTodos` 暴露），此时才从 `todos` 和 `removingIds` 中真正删除。**兜底策略：** 同时启动一个 `setTimeout(300ms)`（略长于动画时长 250ms），以先到者为准触发清理，避免标签切换、`prefers-reduced-motion` 或组件提前卸载导致 `animationend` 不触发、任务「僵尸化」
 3. `App.tsx` 传给 dnd-kit `SortableContext` 的 `items` 数组来自 `visibleTodos.map(t => t.id)`，而 `visibleTodos` 在 `removingIds` 期间仍包含该 id，因此 dnd-kit items 与实际渲染始终保持同步，不会产生警告或位置错位
+
+**`useTodos` 新增 return 字段：** `removingIds: Set<string>`、`onRemoveComplete: (id: string) => void`
 
 **不采用** React `key` 方案，因为 key 变化会导致组件整体卸载，dnd-kit 的 sortable 状态会丢失。
 
@@ -136,7 +138,16 @@ Toast 出现后：
 - `InputArea`：输入框加 `aria-label`，提交按钮加 `aria-label`
 - `Header`：主题切换、语言切换按钮加 `aria-label`
 - 键盘支持：`TodoItem` 支持 `Enter` 开始编辑，`Escape` 取消编辑，`Delete`/`Backspace` 删除（需 focus 在任务上时）
-- **i18n 新增字段：** `markAsDone`、`deleteTask` 需在 `src/i18n.ts` 的 `zh` / `en` 各增加对应函数或模板
+- **i18n 新增字段（函数类型）：** 与现有 `priorityTip: (label: string) => string` 保持一致，新增：
+  ```ts
+  // zh
+  markAsDone: (text: string) => `将「${text}」标记为完成`,
+  deleteTask: (text: string) => `删除「${text}」`,
+  // en
+  markAsDone: (text: string) => `Mark "${text}" as done`,
+  deleteTask: (text: string) => `Delete "${text}"`,
+  ```
+  调用处：`aria-label={t.markAsDone(todo.text)}`，TypeScript 可正确推断类型
 
 ---
 
@@ -185,7 +196,7 @@ useTodos
 | `src/components/TodoItem.tsx` | 修改：完成动画、删除动画、A11y |
 | `src/components/Toast.tsx` | 新增 |
 | `src/hooks/useToast.ts` | 新增 |
-| `src/hooks/useTodos.ts` | 修改：useCallback、撤销快照、A11y 相关 |
+| `src/hooks/useTodos.ts` | 修改：useCallback、撤销快照（`undoSnapshot`）、`removingIds` + `onRemoveComplete` 新增至 return 接口 |
 | `src/hooks/useTodos.test.ts` | 新增 |
 | `src/components/InputArea.tsx` | 修改：新建滑入动画、A11y |
 | `src/components/Filters.tsx` | 修改：A11y |
