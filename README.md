@@ -19,6 +19,8 @@
 - **截止日期**：可选，标记逾期任务
 - **本地存储**：`localStorage` 同步状态，无须登录
 - **响应式**：手机、平板、电脑都能用
+- **操作动效**：任务完成/删除/新建均有动画，Toast 通知 + 撤销
+- **可访问性**：ARIA 标签、键盘导航
 
 ## 快速开始
 
@@ -96,6 +98,8 @@ A minimal todo app. The UI draws from Anthropic's design language — warm off-w
 - **Due dates** — optional, overdue tasks are highlighted
 - **Local storage** — state persists via `localStorage`, no login required
 - **Responsive** — works on mobile, tablet, and desktop
+- **Animations** — polished transitions on complete / delete / add, Toast notifications with undo
+- **Accessible** — ARIA labels, keyboard navigation
 
 ### Getting Started
 

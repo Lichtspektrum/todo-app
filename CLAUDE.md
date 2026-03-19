@@ -11,7 +11,7 @@ npm run preview  # Preview production build
 npm run lint     # Run ESLint
 ```
 
-No test suite is configured.
+Run tests with `npm test` (Vitest). Test file: `src/hooks/useTodos.test.ts`.
 
 ## Architecture
 
