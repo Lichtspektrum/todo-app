@@ -920,13 +920,13 @@ h1 {
 }
 
 /* --- Task complete toggle animation --- */
-.todo-check {
+.checkbox {
   transition: background-color 200ms cubic-bezier(0.34, 1.56, 0.64, 1),
               border-color 200ms ease,
               transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.todo-item.done .todo-check {
+.todo-item.done .checkbox {
   animation: check-bounce 300ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 

@@ -16,7 +16,7 @@ export function Filters({ filter, onChange }: Props) {
   ];
 
   return (
-    <div className="filters" role="group" aria-label={t.filterAll}>
+    <div className="filters" role="group" aria-label={t.filterGroupLabel}>
       {options.map(o => (
         <button
           key={o.value}
