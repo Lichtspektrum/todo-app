@@ -47,6 +47,7 @@ export function InputArea({ onAdd, defaultList }: Props) {
           ref={inputRef}
           type="text"
           placeholder={t.placeholder}
+          aria-label={t.placeholder}
           maxLength={200}
           onKeyDown={e => e.key === 'Enter' && handleAdd()}
         />

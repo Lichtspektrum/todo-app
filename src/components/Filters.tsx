@@ -16,12 +16,13 @@ export function Filters({ filter, onChange }: Props) {
   ];
 
   return (
-    <div className="filters">
+    <div className="filters" role="group" aria-label={t.filterAll}>
       {options.map(o => (
         <button
           key={o.value}
           className={`filter-btn${filter === o.value ? ' active' : ''}`}
           onClick={() => onChange(o.value)}
+          aria-pressed={filter === o.value}
         >
           {o.label}
         </button>

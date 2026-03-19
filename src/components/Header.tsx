@@ -24,13 +24,13 @@ export function Header() {
         <span className="app-name">Todo</span>
         
         <div className="header-actions">
-          <button className="lang-toggle" onClick={toggleLang} title="Switch language">
+          <button className="lang-toggle" onClick={toggleLang} title="Switch language" aria-label={lang === 'zh' ? 'Switch to English' : '切换为中文'}>
             <span className={lang === 'zh' ? 'active' : ''}>中</span>
             <span className="separator">·</span>
             <span className={lang === 'en' ? 'active' : ''}>EN</span>
           </button>
 
-          <button className="theme-toggle" onClick={handleToggle} title="Toggle theme">
+          <button className="theme-toggle" onClick={handleToggle} title="Toggle theme" aria-label={theme === 'light' ? t.switchToDark : t.switchToLight}>
             {theme === 'light' ? (
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="5" />
