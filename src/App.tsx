@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -13,6 +13,7 @@ import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-ki
 import { compareAsc } from 'date-fns';
 import type { Filter, Priority, List } from './types';
 import { useTodos } from './hooks/useTodos';
+import { useToast } from './hooks/useToast';
 import { useLang } from './contexts/LangContext';
 import { Header } from './components/Header';
 import { InputArea } from './components/InputArea';
@@ -23,17 +24,23 @@ import { ListTabs } from './components/ListTabs';
 import { TodoItem } from './components/TodoItem';
 import { EmptyState } from './components/EmptyState';
 import { Footer } from './components/Footer';
+import { Toast } from './components/Toast';
 
 type ListTab = List | 'all';
 type SortMode = 'manual' | 'date';
 
 function TodoApp() {
-  const { todos, addTodo, toggleTodo, deleteTodo, updateText, updatePriority, updateDueDate, clearDone, reorderTodos } = useTodos();
+  const {
+    todos, addTodo, toggleTodo, startRemoveTodo, onRemoveComplete,
+    updateText, updatePriority, updateDueDate, clearDone, reorderTodos,
+    undo, clearUndo, removingIds,
+  } = useTodos();
   const [filter, setFilter] = useState<Filter>('all');
   const [listTab, setListTab] = useState<ListTab>('all');
   const [sortMode, setSortMode] = useState<SortMode>('manual');
   const [activeId, setActiveId] = useState<string | null>(null);
   const { t } = useLang();
+  const { toast, showToast, dismissToast, pauseTimer, resumeTimer } = useToast();
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
@@ -67,33 +74,51 @@ function TodoApp() {
     return scopedTodos.filter(t => t.done).length;
   }, [scopedTodos]);
 
-  function handleAdd(text: string, priority: Priority, list: List, dueDate?: string) {
+  const handleAdd = useCallback((text: string, priority: Priority, list: List, dueDate?: string) => {
     addTodo(text, priority, list, dueDate);
     if (filter === 'done') setFilter('all');
-  }
+    showToast({ message: t.toastAdded });
+  }, [addTodo, filter, showToast, t]);
 
-  function handleDragStart(event: DragStartEvent) {
+  const handleDelete = useCallback((id: string, text: string) => {
+    startRemoveTodo(id);
+    showToast(
+      { message: t.toastDeleted(text), onUndo: undo },
+      clearUndo,
+    );
+  }, [startRemoveTodo, showToast, t, undo, clearUndo]);
+
+  const handleClearDone = useCallback(() => {
+    const doneCount = scopedTodos.filter(todo => todo.done).length;
+    clearDone();
+    showToast(
+      { message: t.toastClearedDone(doneCount), onUndo: undo },
+      clearUndo,
+    );
+  }, [clearDone, scopedTodos, showToast, t, undo, clearUndo]);
+
+  const handleDragStart = useCallback((event: DragStartEvent) => {
     setActiveId(event.active.id as string);
-  }
+  }, []);
 
-  function handleDragEnd(event: DragEndEvent) {
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
     setActiveId(null);
-    
     if (!over || active.id === over.id || sortMode === 'date') return;
-
-    // Only allow reordering when viewing all items without filters
     if (filter !== 'all' || listTab !== 'all') return;
-
     const oldIndex = todos.findIndex(t => t.id === active.id);
     const newIndex = todos.findIndex(t => t.id === over.id);
     if (oldIndex === -1 || newIndex === -1) return;
     reorderTodos(arrayMove(todos, oldIndex, newIndex));
-  }
+  }, [sortMode, filter, listTab, todos, reorderTodos]);
 
   const activeTodo = activeId ? todos.find(t => t.id === activeId) : null;
 
   const defaultList: List = listTab === 'all' ? 'work' : listTab;
+
+  // Suppress unused variable warnings for now
+  void onRemoveComplete;
+  void removingIds;
 
   return (
     <div className="container">
@@ -101,8 +126,8 @@ function TodoApp() {
       <ListTabs current={listTab} onChange={setListTab} />
       <InputArea onAdd={handleAdd} defaultList={defaultList} />
       <ProgressBar total={scopedTodos.length} done={doneCount} />
-      <Stats total={scopedTodos.length} done={doneCount} onClearDone={clearDone} />
-      
+      <Stats total={scopedTodos.length} done={doneCount} onClearDone={handleClearDone} />
+
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
         <Filters filter={filter} onChange={setFilter} />
         <button
@@ -113,9 +138,9 @@ function TodoApp() {
         </button>
       </div>
 
-      <DndContext 
-        sensors={sensors} 
-        collisionDetection={closestCenter} 
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
@@ -129,7 +154,7 @@ function TodoApp() {
                   key={todo.id}
                   todo={todo}
                   onToggle={() => toggleTodo(todo.id)}
-                  onDelete={() => deleteTodo(todo.id)}
+                  onDelete={() => handleDelete(todo.id, todo.text)}
                   onUpdateText={text => updateText(todo.id, text)}
                   onUpdatePriority={priority => updatePriority(todo.id, priority)}
                   onUpdateDueDate={dueDate => updateDueDate(todo.id, dueDate)}
@@ -154,6 +179,12 @@ function TodoApp() {
           ) : null}
         </DragOverlay>
       </DndContext>
+      <Toast
+        toast={toast}
+        onDismiss={() => { dismissToast(); clearUndo(); }}
+        onMouseEnter={() => pauseTimer()}
+        onMouseLeave={() => resumeTimer(clearUndo)}
+      />
       <Footer />
     </div>
   );
