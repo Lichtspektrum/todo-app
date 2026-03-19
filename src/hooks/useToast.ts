@@ -13,7 +13,7 @@ const TOAST_DURATION = 2000;
 
 export function useToast() {
   const [toast, setToast] = useState<ToastState | null>(null);
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const counterRef = useRef(0);
 
   const startTimer = useCallback((onDismiss?: () => void) => {

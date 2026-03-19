@@ -13,7 +13,7 @@ export function useTodos() {
   const [todos, setTodos] = useState<Todo[]>(load);
   const [removingIds, setRemovingIds] = useState<Set<string>>(new Set());
   const [undoSnapshot, setUndoSnapshot] = useState<Todo[] | null>(null);
-  const saveTimer = useRef<ReturnType<typeof setTimeout>>();
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     clearTimeout(saveTimer.current);
