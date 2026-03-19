@@ -116,10 +116,6 @@ function TodoApp() {
 
   const defaultList: List = listTab === 'all' ? 'work' : listTab;
 
-  // Suppress unused variable warnings for now
-  void onRemoveComplete;
-  void removingIds;
-
   return (
     <div className="container">
       <Header />
@@ -149,7 +145,7 @@ function TodoApp() {
             {visibleTodos.length === 0 ? (
               <EmptyState filter={filter} />
             ) : (
-              visibleTodos.map(todo => (
+              visibleTodos.map((todo, index) => (
                 <TodoItem
                   key={todo.id}
                   todo={todo}
@@ -158,6 +154,9 @@ function TodoApp() {
                   onUpdateText={text => updateText(todo.id, text)}
                   onUpdatePriority={priority => updatePriority(todo.id, priority)}
                   onUpdateDueDate={dueDate => updateDueDate(todo.id, dueDate)}
+                  onRemoveComplete={onRemoveComplete}
+                  isRemoving={removingIds.has(todo.id)}
+                  isNew={index === 0 && !removingIds.has(todo.id)}
                 />
               ))
             )}

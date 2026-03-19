@@ -14,6 +14,9 @@ interface Props {
   onUpdateText: (text: string) => void;
   onUpdatePriority: (priority: Priority) => void;
   onUpdateDueDate?: (dueDate: string | undefined) => void;
+  onRemoveComplete?: (id: string) => void;
+  isRemoving?: boolean;
+  isNew?: boolean;
   isOverlay?: boolean;
 }
 
@@ -34,7 +37,10 @@ function formatDate(dueDate: string, localeKey: 'zhCN' | 'enUS'): string {
   return format(date, 'MMM d, EEE', { locale: locales[localeKey] });
 }
 
-export const TodoItem = memo(function TodoItem({ todo, onToggle, onDelete, onUpdateText, onUpdatePriority, onUpdateDueDate, isOverlay }: Props) {
+export const TodoItem = memo(function TodoItem({
+  todo, onToggle, onDelete, onUpdateText, onUpdatePriority,
+  onUpdateDueDate, onRemoveComplete, isRemoving, isNew, isOverlay
+}: Props) {
   const { t } = useLang();
   const divRef = useRef<HTMLDivElement>(null);
   const datePickerRef = useRef<HTMLDivElement>(null);
@@ -73,6 +79,12 @@ export const TodoItem = memo(function TodoItem({ todo, onToggle, onDelete, onUpd
     return () => document.removeEventListener('mousedown', handle);
   }, [datePickerOpen]);
 
+  useEffect(() => {
+    if (!isRemoving) return;
+    const timer = setTimeout(() => onRemoveComplete?.(todo.id), 300);
+    return () => clearTimeout(timer);
+  }, [isRemoving, todo.id, onRemoveComplete]);
+
   function handleBlur() {
     const text = divRef.current?.textContent ?? '';
     onUpdateText(text);
@@ -98,10 +110,17 @@ export const TodoItem = memo(function TodoItem({ todo, onToggle, onDelete, onUpd
   }
 
   return (
+    <div className={`todo-item-wrapper${isRemoving ? ' removing' : ''}`}>
     <div
       ref={setNodeRef}
       style={style}
-      className={`todo-item${todo.done ? ' done' : ''}${isDragging ? ' dragging' : ''}`}
+      className={`todo-item${todo.done ? ' done' : ''}${isDragging ? ' dragging' : ''}${isNew ? ' todo-entering' : ''}`}
+      data-removing={isRemoving || undefined}
+      onAnimationEnd={(e) => {
+        if (e.animationName === 'todo-exit-slide') {
+          onRemoveComplete?.(todo.id);
+        }
+      }}
     >
       <div
         className={`priority-indicator ${todo.priority}`}
@@ -139,11 +158,11 @@ export const TodoItem = memo(function TodoItem({ todo, onToggle, onDelete, onUpd
         className={`checkbox${todo.done ? ' checked' : ''}`}
         role="checkbox"
         aria-checked={todo.done}
-        aria-label={todo.text}
+        aria-label={t.markAsDone(todo.text)}
         onClick={onToggle}
         tabIndex={0}
         onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
+          if (e.key === ' ' || e.key === 'Enter') {
             e.preventDefault();
             onToggle();
           }
@@ -212,12 +231,13 @@ export const TodoItem = memo(function TodoItem({ todo, onToggle, onDelete, onUpd
       >
         {t.priorityLabels[todo.priority]}
       </button>
-      <button className="delete-btn" title={t.deleteTitle} aria-label={t.deleteTitle} onClick={onDelete}>
+      <button className="delete-btn" title={t.deleteTitle} aria-label={t.deleteTask(todo.text)} onClick={onDelete}>
         <svg viewBox="0 0 14 14">
           <line x1="2" y1="2" x2="12" y2="12" />
           <line x1="12" y1="2" x2="2" y2="12" />
         </svg>
       </button>
+    </div>
     </div>
   );
 });
