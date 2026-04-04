@@ -41,6 +41,7 @@ export const translations = {
     toastClearedDone: (n: number) => `已清空 ${n} 项已完成任务`,
     switchToLight: '切换到浅色模式',
     switchToDark: '切换到深色模式',
+    switchToNothing: '切换到 Nothing 风格',
     filterGroupLabel: '过滤视图',
   },
   en: {
@@ -83,6 +84,7 @@ export const translations = {
     toastClearedDone: (n: number) => `Cleared ${n} completed ${n === 1 ? 'task' : 'tasks'}`,
     switchToLight: 'Switch to light mode',
     switchToDark: 'Switch to dark mode',
+    switchToNothing: 'Switch to Nothing style',
     filterGroupLabel: 'Filter view',
   },
 };

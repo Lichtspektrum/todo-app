@@ -30,7 +30,12 @@ export function Header() {
             <span className={lang === 'en' ? 'active' : ''}>EN</span>
           </button>
 
-          <button className="theme-toggle" onClick={handleToggle} title="Toggle theme" aria-label={theme === 'light' ? t.switchToDark : t.switchToLight}>
+          <button
+            className="theme-toggle"
+            onClick={handleToggle}
+            title="Toggle theme"
+            aria-label={theme === 'light' ? t.switchToDark : theme === 'dark' ? t.switchToNothing : t.switchToLight}
+          >
             {theme === 'light' ? (
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="5" />
@@ -43,9 +48,21 @@ export function Header() {
                 <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
                 <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
               </svg>
-            ) : (
+            ) : theme === 'dark' ? (
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="3" cy="3" r="1.5" fill="#FF0000" />
+                <circle cx="7.5" cy="3" r="1.5" fill="#FF0000" />
+                <circle cx="12" cy="3" r="1.5" fill="#FF0000" />
+                <circle cx="3" cy="7.5" r="1.5" fill="#FF0000" />
+                <circle cx="7.5" cy="7.5" r="1.5" fill="#FF0000" />
+                <circle cx="12" cy="7.5" r="1.5" fill="#FF0000" />
+                <circle cx="3" cy="12" r="1.5" fill="#FF0000" />
+                <circle cx="7.5" cy="12" r="1.5" fill="#FF0000" />
+                <circle cx="12" cy="12" r="1.5" fill="#FF0000" />
               </svg>
             )}
           </button>
