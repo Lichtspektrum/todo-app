@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+
 @font-face {
   font-family: 'Sohne';
   src: local('Sohne'), local('Sohne-Buch'),
@@ -40,6 +42,9 @@ button, input, select, textarea {
   --surface-done: #F9F7F3;
   --surface-action-hover: #F0EBE3;
   --checkbox-bg: #FFFFFF;
+
+  --toast-bg: #3d2b1f;
+  --toast-text: #f5e6d3;
 }
 
 [data-theme="dark"] {
@@ -64,6 +69,67 @@ button, input, select, textarea {
   --surface-done: #161616;
   --surface-action-hover: #2A2A2A;
   --checkbox-bg: #1A1A1A;
+
+  --toast-bg: #2A2A2A;
+  --toast-text: #ECECEC;
+}
+
+[data-theme="nothing"] {
+  --bg: #000000;
+  --surface: #0D0D0D;
+  --border: #2A2A2A;
+  --text: #FFFFFF;
+  --text-secondary: #777777;
+  --accent: #FF0000;
+  --accent-light: #1A0000;
+  --done: #444444;
+  --shadow: none;
+
+  --priority-high: #FF0000;
+  --priority-high-bg: #1A0000;
+  --priority-medium: #CCCCCC;
+  --priority-medium-bg: #181818;
+  --priority-low: #666666;
+  --priority-low-bg: #111111;
+
+  --border-hover: #444444;
+  --surface-done: #080808;
+  --surface-action-hover: #181818;
+  --checkbox-bg: #000000;
+
+  --toast-bg: #FFFFFF;
+  --toast-text: #000000;
+}
+
+/* Nothing theme overrides */
+[data-theme="nothing"] body {
+  font-family: 'Space Mono', 'Courier New', Courier, monospace;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+[data-theme="nothing"] .todo-item,
+[data-theme="nothing"] .input-wrapper,
+[data-theme="nothing"] .add-btn,
+[data-theme="nothing"] .filter-btn,
+[data-theme="nothing"] .sort-btn,
+[data-theme="nothing"] .donate-modal,
+[data-theme="nothing"] .date-picker-panel,
+[data-theme="nothing"] .list-tab {
+  border-radius: 0;
+}
+
+[data-theme="nothing"] *:focus-visible {
+  outline: 1px solid #FF0000;
+  outline-offset: 2px;
+}
+
+[data-theme="nothing"] .todo-item:hover {
+  border-color: #FF0000;
+}
+
+[data-theme="nothing"] .due-date-input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
 }
 
 body {
@@ -966,8 +1032,8 @@ h1 {
   align-items: center;
   gap: 12px;
   padding: 10px 16px;
-  background: #3d2b1f;
-  color: #f5e6d3;
+  background: var(--toast-bg);
+  color: var(--toast-text);
   border-radius: 10px;
   font-size: 14px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
@@ -1005,17 +1071,19 @@ h1 {
 .toast-close {
   background: none;
   border: none;
-  color: rgba(245, 230, 211, 0.5);
+  color: var(--toast-text);
+  opacity: 0.5;
   font-size: 18px;
   line-height: 1;
   font-family: inherit;
   cursor: pointer;
   padding: 0;
-  transition: color 0.15s;
+  transition: opacity 0.15s;
 }
 
 .toast-close:hover {
-  color: #f5e6d3;
+  color: var(--toast-text);
+  opacity: 1;
 }
 
 /* Donate modal */

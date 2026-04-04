@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from 'react';
 
-type Theme = 'light' | 'dark';
+type Theme = 'light' | 'dark' | 'nothing';
 
 interface ThemeContextValue {
   theme: Theme;
@@ -16,7 +16,7 @@ const ThemeContext = createContext<ThemeContextValue>({
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => {
     const saved = localStorage.getItem('theme') as Theme | null;
-    if (saved === 'light' || saved === 'dark') return saved;
+    if (saved === 'light' || saved === 'dark' || saved === 'nothing') return saved;
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
 
@@ -27,7 +27,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const toggleTheme = (originX?: number, originY?: number) => {
     const doSwitch = () => {
-      setTheme(t => (t === 'light' ? 'dark' : 'light'));
+      setTheme(t => t === 'light' ? 'dark' : t === 'dark' ? 'nothing' : 'light');
     };
 
     if (!document.startViewTransition || originX === undefined || originY === undefined) {
