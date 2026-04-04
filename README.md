@@ -2,7 +2,7 @@
 
 [English](#english)
 
-一个极简的待办清单。UI 参考了 Anthropic 的设计，暖米色调配铜橙点缀。支持深色模式、多语言、优先级标记、拖拽排序——功能够用，代码可读。
+一个极简的待办清单。三套视觉风格随时切换：Anthropic 暖米色调、深色模式、以及 Nothing 工业黑。支持多语言、优先级标记、拖拽排序——功能够用，代码可读。
 
 **[→ 在线体验](https://todo-app-tau-sandy-90.vercel.app)**
 
@@ -14,7 +14,7 @@
 - **优先级**：高/中/低，用颜色和左侧竖线区分
 - **过滤视图**：全部、待办、已完成
 - **进度条**：实时显示完成率
-- **日夜模式**：圆形波纹展开的切换动效
+- **三套主题**：Anthropic 暖米色 / 深色 / Nothing 工业黑，圆形波纹展开的切换动效
 - **多语言**：中文、English（右上角切换）
 - **截止日期**：可选，标记逾期任务
 - **本地存储**：`localStorage` 同步状态，无须登录
@@ -82,7 +82,7 @@ MIT © LichtSpektrum
 
 [回到中文](#todo)
 
-A minimal todo app. The UI draws from Anthropic's design language — warm off-white tones with a copper-orange accent. Dark mode, bilingual interface, priority levels, drag-to-reorder. Does what it needs to, and the code stays readable.
+A minimal todo app. Three visual themes, switchable at any time: Anthropic warm off-white, dark mode, and Nothing industrial black. Bilingual interface, priority levels, drag-to-reorder. Does what it needs to, and the code stays readable.
 
 **[→ Live Demo](https://todo-app-tau-sandy-90.vercel.app)**
 
@@ -94,7 +94,7 @@ A minimal todo app. The UI draws from Anthropic's design language — warm off-w
 - **Priority levels** — high / medium / low, color-coded with a left-edge indicator
 - **Filter views** — All, Active, Done
 - **Progress bar** — live completion percentage
-- **Dark mode** — circular ripple transition animation
+- **Three themes** — Anthropic warm / dark / Nothing industrial black; circular ripple transition between each
 - **Bilingual** — Chinese and English, toggle in the top-right corner
 - **Due dates** — optional, overdue tasks are highlighted
 - **Local storage** — state persists via `localStorage`, no login required

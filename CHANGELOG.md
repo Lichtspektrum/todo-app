@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.3.0] — 2026-04-04
+
+### 新增
+
+- 🎨 Nothing 主题：纯黑背景 + 白色点阵纹理，`Space Mono` 等宽字体，全面去除圆角
+- 主题切换改为三态循环：浅色 → 深色 → Nothing → 浅色
+- Nothing 模式下切换按钮显示 3×3 红色点阵图标
+
+### 内部变更
+
+- `Theme` 类型扩展为 `'light' | 'dark' | 'nothing'`，localStorage 兼容三态持久化
+- 新增 `[data-theme="nothing"]` CSS 变量块，涵盖全部颜色令牌
+- 修复 Toast 硬编码颜色，改为 `--toast-bg` / `--toast-text` CSS 变量
+- 引入 Google Fonts Space Mono（仅在 Nothing 主题下生效）
+
+---
+
 ## [1.2.0] — 2026-03-19
 
 ### 其他
