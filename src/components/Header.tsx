@@ -3,16 +3,24 @@ import { useTheme } from '../contexts/ThemeContext';
 
 export function Header() {
   const { t, lang, toggleLang } = useLang();
-  const { theme, toggleTheme } = useTheme();
+  const { brand, mode, toggleMode, toggleBrand } = useTheme();
   const dateStr = new Date().toLocaleDateString(t.dateLocale, {
     year: 'numeric', month: 'long', day: 'numeric', weekday: 'long',
   });
 
-  const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const getOrigin = (e: React.MouseEvent<HTMLButtonElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const x = rect.left + rect.width / 2;
-    const y = rect.top + rect.height / 2;
-    toggleTheme(x, y);
+    return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+  };
+
+  const handleModeToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const { x, y } = getOrigin(e);
+    toggleMode(x, y);
+  };
+
+  const handleBrandToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const { x, y } = getOrigin(e);
+    toggleBrand(x, y);
   };
 
   return (
@@ -32,11 +40,34 @@ export function Header() {
 
           <button
             className="theme-toggle"
-            onClick={handleToggle}
-            title="Toggle theme"
-            aria-label={theme === 'light' ? t.switchToDark : theme === 'dark' ? t.switchToNothing : t.switchToLight}
+            onClick={handleBrandToggle}
+            title="Toggle brand"
+            aria-label={brand === 'anthropic' ? t.switchToNothing : t.switchToAnthropic}
           >
-            {theme === 'light' ? (
+            {brand === 'anthropic' ? (
+              <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="5" /></svg>
+            ) : (
+              <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="3" cy="3" r="1.5" fill="currentColor" />
+                <circle cx="7.5" cy="3" r="1.5" fill="currentColor" />
+                <circle cx="12" cy="3" r="1.5" fill="currentColor" />
+                <circle cx="3" cy="7.5" r="1.5" fill="currentColor" />
+                <circle cx="7.5" cy="7.5" r="1.5" fill="currentColor" />
+                <circle cx="12" cy="7.5" r="1.5" fill="currentColor" />
+                <circle cx="3" cy="12" r="1.5" fill="currentColor" />
+                <circle cx="7.5" cy="12" r="1.5" fill="currentColor" />
+                <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+              </svg>
+            )}
+          </button>
+
+          <button
+            className="theme-toggle"
+            onClick={handleModeToggle}
+            title="Toggle light/dark"
+            aria-label={mode === 'light' ? t.switchToDark : t.switchToLight}
+          >
+            {mode === 'light' ? (
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="5" />
                 <line x1="12" y1="1" x2="12" y2="3" />
@@ -48,21 +79,9 @@ export function Header() {
                 <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
                 <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
               </svg>
-            ) : theme === 'dark' ? (
+            ) : (
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-              </svg>
-            ) : (
-              <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="3" cy="3" r="1.5" fill="#FF0000" />
-                <circle cx="7.5" cy="3" r="1.5" fill="#FF0000" />
-                <circle cx="12" cy="3" r="1.5" fill="#FF0000" />
-                <circle cx="3" cy="7.5" r="1.5" fill="#FF0000" />
-                <circle cx="7.5" cy="7.5" r="1.5" fill="#FF0000" />
-                <circle cx="12" cy="7.5" r="1.5" fill="#FF0000" />
-                <circle cx="3" cy="12" r="1.5" fill="#FF0000" />
-                <circle cx="7.5" cy="12" r="1.5" fill="#FF0000" />
-                <circle cx="12" cy="12" r="1.5" fill="#FF0000" />
               </svg>
             )}
           </button>

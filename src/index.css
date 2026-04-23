@@ -47,7 +47,7 @@ button, input, select, textarea {
   --toast-text: #f5e6d3;
 }
 
-[data-theme="dark"] {
+[data-mode="dark"] {
   --bg: #0F0F0F;
   --surface: #1A1A1A;
   --border: #2A2A2A;
@@ -74,7 +74,7 @@ button, input, select, textarea {
   --toast-text: #ECECEC;
 }
 
-[data-theme="nothing"] {
+[data-brand="nothing"][data-mode="dark"] {
   --bg: #000000;
   --surface: #0D0D0D;
   --border: #2A2A2A;
@@ -101,34 +101,68 @@ button, input, select, textarea {
   --toast-text: #000000;
 }
 
-/* Nothing theme overrides */
-[data-theme="nothing"] body {
+[data-brand="nothing"][data-mode="light"] {
+  --bg: #FFFFFF;
+  --surface: #FFFFFF;
+  --border: #D4D4D4;
+  --text: #000000;
+  --text-secondary: #7A7A7A;
+  --accent: #FF0000;
+  --accent-light: #FFF0F0;
+  --done: #B0B0B0;
+  --shadow: none;
+
+  --priority-high: #FF0000;
+  --priority-high-bg: #FFF0F0;
+  --priority-medium: #555555;
+  --priority-medium-bg: #F2F2F2;
+  --priority-low: #999999;
+  --priority-low-bg: #F6F6F6;
+
+  --border-hover: #000000;
+  --surface-done: #FAFAFA;
+  --surface-action-hover: #F0F0F0;
+  --checkbox-bg: #FFFFFF;
+
+  --toast-bg: #000000;
+  --toast-text: #FFFFFF;
+}
+
+/* Nothing brand overrides (both modes) */
+[data-brand="nothing"] body {
   font-family: 'Space Mono', 'Courier New', Courier, monospace;
-  background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
   background-size: 20px 20px;
 }
 
-[data-theme="nothing"] .todo-item,
-[data-theme="nothing"] .input-wrapper,
-[data-theme="nothing"] .add-btn,
-[data-theme="nothing"] .filter-btn,
-[data-theme="nothing"] .sort-btn,
-[data-theme="nothing"] .donate-modal,
-[data-theme="nothing"] .date-picker-panel,
-[data-theme="nothing"] .list-tab {
+[data-brand="nothing"][data-mode="dark"] body {
+  background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
+}
+
+[data-brand="nothing"][data-mode="light"] body {
+  background-image: radial-gradient(circle, rgba(0,0,0,0.08) 1px, transparent 1px);
+}
+
+[data-brand="nothing"] .todo-item,
+[data-brand="nothing"] .input-wrapper,
+[data-brand="nothing"] .add-btn,
+[data-brand="nothing"] .filter-btn,
+[data-brand="nothing"] .sort-btn,
+[data-brand="nothing"] .donate-modal,
+[data-brand="nothing"] .date-picker-panel,
+[data-brand="nothing"] .list-tab {
   border-radius: 0;
 }
 
-[data-theme="nothing"] *:focus-visible {
+[data-brand="nothing"] *:focus-visible {
   outline: 1px solid #FF0000;
   outline-offset: 2px;
 }
 
-[data-theme="nothing"] .todo-item:hover {
+[data-brand="nothing"] .todo-item:hover {
   border-color: #FF0000;
 }
 
-[data-theme="nothing"] .due-date-input::-webkit-calendar-picker-indicator {
+[data-brand="nothing"][data-mode="dark"] .due-date-input::-webkit-calendar-picker-indicator {
   filter: invert(1);
 }
 
@@ -364,7 +398,7 @@ h1 {
   filter: invert(0.4);
 }
 
-[data-theme="dark"] .due-date-input::-webkit-calendar-picker-indicator {
+[data-mode="dark"] .due-date-input::-webkit-calendar-picker-indicator {
   filter: invert(0.8);
 }
 
@@ -379,8 +413,8 @@ h1 {
   box-shadow: 0 0 0 2px rgba(207, 102, 49, 0.1);
 }
 
-[data-theme="dark"] .due-date-input:hover,
-[data-theme="dark"] .due-date-input:focus {
+[data-mode="dark"] .due-date-input:hover,
+[data-mode="dark"] .due-date-input:focus {
   border-color: #4A4A4A;
 }
 
@@ -564,7 +598,7 @@ h1 {
 }
 
 /* DragOverlay styles */
-[data-theme="dark"] .todo-item.dragging {
+[data-mode="dark"] .todo-item.dragging {
   border-color: var(--accent);
   border-style: dashed;
   background: rgba(26, 26, 26, 0.5);

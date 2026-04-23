@@ -6,7 +6,7 @@ export function Footer() {
   return (
     <>
       <footer className="footer">
-        <a href="https://github.com/Lichtspektrum/todo-app/releases/tag/v1.2.0" target="_blank" rel="noopener noreferrer">[v1.2.0]</a>
+        <a href="https://github.com/Lichtspektrum/todo-app/releases/tag/v1.4.0" target="_blank" rel="noopener noreferrer">[v1.4.0]</a>
         <span className="footer-dot">·</span>
         <a href="https://github.com/Lichtspektrum/todo-app" target="_blank" rel="noopener noreferrer">[GitHub]</a>
         <span className="footer-dot">·</span>

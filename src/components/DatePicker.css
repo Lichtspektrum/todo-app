@@ -56,7 +56,7 @@
   transform-origin: top right;
 }
 
-[data-theme="dark"] .datepicker-popover {
+[data-mode="dark"] .datepicker-popover {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -167,6 +167,6 @@
   opacity: 0.5;
 }
 
-[data-theme="dark"] .anthropic-calendar .rdp-day_outside {
+[data-mode="dark"] .anthropic-calendar .rdp-day_outside {
   opacity: 0.3;
 }

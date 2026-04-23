@@ -1,54 +1,78 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from 'react';
 
-type Theme = 'light' | 'dark' | 'nothing';
+type Brand = 'anthropic' | 'nothing';
+type Mode = 'light' | 'dark';
 
 interface ThemeContextValue {
-  theme: Theme;
-  toggleTheme: (originX?: number, originY?: number) => void;
+  brand: Brand;
+  mode: Mode;
+  toggleMode: (originX?: number, originY?: number) => void;
+  toggleBrand: (originX?: number, originY?: number) => void;
 }
 
 const ThemeContext = createContext<ThemeContextValue>({
-  theme: 'light',
-  toggleTheme: () => {},
+  brand: 'anthropic',
+  mode: 'light',
+  toggleMode: () => {},
+  toggleBrand: () => {},
 });
 
+function migrateLegacyTheme(): { brand: Brand; mode: Mode } | null {
+  const legacy = localStorage.getItem('theme');
+  if (legacy === 'light') return { brand: 'anthropic', mode: 'light' };
+  if (legacy === 'dark') return { brand: 'anthropic', mode: 'dark' };
+  if (legacy === 'nothing') return { brand: 'nothing', mode: 'dark' };
+  return null;
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    const saved = localStorage.getItem('theme') as Theme | null;
-    if (saved === 'light' || saved === 'dark' || saved === 'nothing') return saved;
+  const [brand, setBrand] = useState<Brand>(() => {
+    const saved = localStorage.getItem('brand');
+    if (saved === 'anthropic' || saved === 'nothing') return saved;
+    return migrateLegacyTheme()?.brand ?? 'anthropic';
+  });
+
+  const [mode, setMode] = useState<Mode>(() => {
+    const saved = localStorage.getItem('mode');
+    if (saved === 'light' || saved === 'dark') return saved;
+    const legacy = migrateLegacyTheme();
+    if (legacy) return legacy.mode;
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-  }, [theme]);
+    document.documentElement.setAttribute('data-brand', brand);
+    document.documentElement.setAttribute('data-mode', mode);
+    localStorage.setItem('brand', brand);
+    localStorage.setItem('mode', mode);
+  }, [brand, mode]);
 
-  const toggleTheme = (originX?: number, originY?: number) => {
-    const doSwitch = () => {
-      setTheme(t => t === 'light' ? 'dark' : t === 'dark' ? 'nothing' : 'light');
-    };
-
+  const runTransition = (fn: () => void, originX?: number, originY?: number) => {
     if (!document.startViewTransition || originX === undefined || originY === undefined) {
-      doSwitch();
+      fn();
       return;
     }
-
     const maxRadius = Math.hypot(
       Math.max(originX, window.innerWidth - originX),
       Math.max(originY, window.innerHeight - originY)
     );
-
     document.documentElement.style.setProperty('--vt-x', `${originX}px`);
     document.documentElement.style.setProperty('--vt-y', `${originY}px`);
     document.documentElement.style.setProperty('--vt-r', `${maxRadius}px`);
+    document.startViewTransition(fn);
+  };
 
-    document.startViewTransition(doSwitch);
+  const toggleMode = (originX?: number, originY?: number) => {
+    runTransition(() => setMode(m => m === 'light' ? 'dark' : 'light'), originX, originY);
+  };
+
+  const toggleBrand = (originX?: number, originY?: number) => {
+    runTransition(() => setBrand(b => b === 'anthropic' ? 'nothing' : 'anthropic'), originX, originY);
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ brand, mode, toggleMode, toggleBrand }}>
       {children}
     </ThemeContext.Provider>
   );

@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.4.0] — 2026-04-23
+
+### 主题系统重构
+
+- 主题模型拆为两个正交维度：**品牌**（Anthropic / Nothing）× **明暗**（Light / Dark），共 4 种组合
+- **新增 Nothing 亮色模式**：纯白底 + 黑色点阵纹理 + 红色 accent，保持直角边框与 Space Mono 字体
+- 头部改为**两个独立切换按钮**——左侧切换品牌，右侧切换明暗，取代原先的三态循环按钮
+- 两个维度的选择各自持久化（`localStorage` 中分别存 `brand` 与 `mode`），并保留对旧 `theme` 键的迁移
+
+### 内部变更
+
+- `ThemeContext` 重写：`{theme, toggleTheme}` → `{brand, mode, toggleBrand, toggleMode}`
+- CSS 选择器切换：`[data-theme="dark"]` → `[data-mode="dark"]`；`[data-theme="nothing"]` → `[data-brand="nothing"]`（必要时叠加 `[data-mode]`）
+- 新增 `switchToAnthropic` i18n 字符串（中英）
+
+---
+
 ## [1.3.0] — 2026-04-04
 
 ### 新增
