@@ -181,6 +181,18 @@ button, input, select, textarea {
   outline-offset: 2px;
 }
 
+/* Stable button widths so layout doesn't shift when toggling language */
+[data-brand="nothing"] .list-tab,
+[data-brand="nothing"] .filter-btn {
+  min-width: 72px;
+}
+[data-brand="nothing"] .list-picker-btn {
+  min-width: 56px;
+}
+[data-brand="nothing"] .sort-btn {
+  min-width: 120px;
+}
+
 [data-brand="nothing"] .todo-item:hover {
   border-color: #FF0000;
 }
