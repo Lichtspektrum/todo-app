@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import type { Lang } from '../i18n';
 import { translations } from '../i18n';
 
@@ -20,6 +20,10 @@ const LangContext = createContext<LangContextValue>({
 export function LangProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLang] = useState<Lang>('zh');
   const toggleLang = () => setLang(l => l === 'zh' ? 'en' : 'zh');
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
 
   return (
     <LangContext.Provider value={{ lang, t: translations[lang], toggleLang }}>
