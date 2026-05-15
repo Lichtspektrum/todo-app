@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.5.0] — 2026-05-15
+
+### 字体
+
+- Nothing 品牌新增 **Sarasa Mono SC**（等距更纱黑体 SC）作为中文字形，与 Space Mono 共享等宽度量，中英文同行排版终于齐整。Latin 仍走 Space Mono，CJK 走 Sarasa，由 `unicode-range` 自动按字符分流
+- 字体仅在 Nothing 品牌 + 出现 CJK 字符时按需下载（3.8 MB woff2，从上游 25 MB TTF 子集化后压缩），未进 Nothing 品牌的用户完全不下载
+
+### 修复
+
+- 修复 `<html lang>` 始终为 `"zh"`、不随语言切换更新的问题。`LangContext` 现在通过 `useEffect` 同步 `document.documentElement.lang`，对屏幕阅读器和 `:lang()` CSS 选择器都更友好
+
+### 内部变更
+
+- 新增 `public/fonts/SarasaMonoSC-Regular.woff2`，通过 `@font-face` 声明，`unicode-range` 限定 CJK 统一表意文字、扩展 A、部首补充、CJK 符号标点、半宽全宽形式
+- `vite.config.ts` 的 workbox：Sarasa 字体从 precache 中排除（`globIgnores`），改用 `CacheFirst` runtime 缓存（`/fonts/*.woff2`，1 年 TTL）。避免给不用 Nothing 品牌的用户白白塞进 PWA precache
+
+---
+
 ## [1.4.0] — 2026-04-23
 
 ### 主题系统重构
