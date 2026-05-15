@@ -148,6 +148,10 @@ button, input, select, textarea {
   background-size: 20px 20px;
 }
 
+[data-brand="nothing"]:lang(zh) body {
+  letter-spacing: 0.08em;
+}
+
 [data-brand="nothing"][data-mode="dark"] body {
   background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
 }
