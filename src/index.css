@@ -149,7 +149,7 @@ button, input, select, textarea {
 }
 
 [data-brand="nothing"]:lang(zh) body {
-  letter-spacing: 0.08em;
+  letter-spacing: 0.2em;
 }
 
 [data-brand="nothing"][data-mode="dark"] body {
