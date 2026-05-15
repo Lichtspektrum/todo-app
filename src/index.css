@@ -152,6 +152,11 @@ button, input, select, textarea {
   letter-spacing: 0.2em;
 }
 
+[data-brand="nothing"]:lang(zh) h1,
+[data-brand="nothing"]:lang(zh) .priority-badge {
+  letter-spacing: inherit;
+}
+
 [data-brand="nothing"][data-mode="dark"] body {
   background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
 }
