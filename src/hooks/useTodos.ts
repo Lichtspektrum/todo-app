@@ -106,7 +106,6 @@ export function useTodos() {
     undoSnapshot,
     addTodo,
     toggleTodo,
-    deleteTodo,
     updateText,
     updatePriority,
     updateDueDate,
